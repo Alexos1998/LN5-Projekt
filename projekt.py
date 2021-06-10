@@ -6,9 +6,8 @@ from entities import *
 
 
 def setup():
-    global spielfeld, canvasSpielfeld, canvasTextfeld
+    global spielfeld, canvasSpielfeld, canvasTextfeld, img
 
-    #Erstellen eines Canvas, zur Darstellung von Spielfiguren und Leben
     canvasSpielfeld = Canvas(spielfeld, height=500, width=800)
     canvasSpielfeld.configure(bg="black")
     canvasSpielfeld.pack()
@@ -18,7 +17,9 @@ def setup():
     canvasTextfeld.configure(bg="black")
     canvasTextfeld.pack()
 
-    intro()
+    # img = PhotoImage(file="../LN5-Projekt/Assets/Gruppe.png")
+    # canvasSpielfeld.create_image(20, 20, anchor=NW, image=img)
+
 
 def intro():
     global introText, canvasTextfeld,button1
@@ -39,8 +40,6 @@ def intro():
         textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
         canvasTextfeld.after(delay2 + 1000, textUpdate)
 
-
-
     button1 = Button(spielfeld, text="Quit", bg="black", fg="white",command= lambda: ersteRunde())
     spielfeld.after(delay2 + 1200, lambda: buttonErsteRunde())
 
@@ -48,10 +47,21 @@ def buttonErsteRunde():
     global button1
     canvasTextfeld.create_window(400, 280, window=button1)
 
+
+def figuren():
+    global canvasSpielfeld, spielerFigur, figurAnzeige
+    spielerFigur = PhotoImage(file="Assets/Gruppe.png")
+    figurAnzeige = canvasSpielfeld.create_image(20, 220, anchor=NW, image=spielerFigur, tags="figure")
+
+
+
+
+
 def ersteRunde():
-    global canvasTextfeld, button1
+    global canvasTextfeld, button1, figurAnzeige
     canvasTextfeld.delete(introText)
     button1.destroy()
+    canvasSpielfeld.delete("figure")
 
 
 
@@ -63,8 +73,10 @@ spielfeld.geometry("800x800")
 spielfeld.configure(bg="black")
 
 
-setup()
 
+setup()
+intro()
+figuren()
 
 spielfeld.mainloop()
 
