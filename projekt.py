@@ -6,9 +6,7 @@ from entities import *
 
 
 def setup():
-    global spielfeld
-    global canvasSpielfeld
-    global canvasTextfeld
+    global spielfeld, canvasSpielfeld, canvasTextfeld
 
     #Erstellen eines Canvas, zur Darstellung von Spielfiguren und Leben
     canvasSpielfeld = Canvas(spielfeld, height=500, width=800)
@@ -16,7 +14,7 @@ def setup():
     canvasSpielfeld.pack()
 
     #Erstellen des Canvas, zur Darstellung von Spieltext und Buttons
-    canvasTextfeld = Canvas(spielfeld, height=500, width=800)
+    canvasTextfeld = Canvas(spielfeld, height=300, width=800)
     canvasTextfeld.configure(bg="black")
     canvasTextfeld.pack()
 
@@ -41,14 +39,17 @@ def intro():
         textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
         canvasTextfeld.after(delay2 + 1000, textUpdate)
 
-    button = Button(spielfeld, text="test", bg="black", command=lambda: ersteRunde())
-    #canvasTextfeld.after(10000, button.place())
-    button1 = Button(spielfeld, text="Quit", bg="black", fg="white", command= lambda: ersteRunde())
-    canvasTextfeld.create_window(400,280,anchor="center", window=button1)
 
+
+    button1 = Button(spielfeld, text="Quit", bg="black", fg="white",command= lambda: ersteRunde())
+    spielfeld.after(delay2 + 1200, lambda: buttonErsteRunde())
+
+def buttonErsteRunde():
+    global button1
+    canvasTextfeld.create_window(400, 280, window=button1)
 
 def ersteRunde():
-    global canvasTextfeld
+    global canvasTextfeld, button1
     canvasTextfeld.delete(introText)
     button1.destroy()
 
