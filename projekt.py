@@ -1,62 +1,78 @@
 import random
+import time
 from tkinter import *
 from entities import *
 
-def auswahl():
-    auswahlFeuer = Button(spielfeld, text="Feuer", command = lambda: element("Feuer"),
-                            bg= "black",
-                            fg= "red",
-                            font= (20),
-                            highlightthickness= 1,
-                            bd= 0)
-    auswahlErde = Button(spielfeld, text="Erde", command = lambda: element("Erde"),
-                            bg= "Brown",
-                            fg= "red",
-                            font= (20),
-                            highlightthickness= 1,
-                            bd= 0)
-    auswahlBlitz = Button(spielfeld, text="Blitz", command = lambda: element("Blitz"),
-                            bg= "Yellow",
-                            fg= "red",
-                            font= (20),
-                            highlightthickness= 1,
-                            bd= 0)
-
-    auswahlFeuer.grid(row=14, column=1, padx= 100)
-    auswahlErde.grid(row=14, column=2)
-    auswahlBlitz.grid(row=15, column=1)
 
 
-def element(element):
-    global Fighter1
-    Fighter1 = Fighter(element)
+def setup():
+    global spielfeld
+    global canvasSpielfeld
+    global canvasTextfeld
+
+    #Erstellen eines Canvas, zur Darstellung von Spielfiguren und Leben
+    canvasSpielfeld = Canvas(spielfeld, height=500, width=800)
+    canvasSpielfeld.configure(bg="black")
+    canvasSpielfeld.pack()
+
+    #Erstellen des Canvas, zur Darstellung von Spieltext und Buttons
+    canvasTextfeld = Canvas(spielfeld, height=500, width=800)
+    canvasTextfeld.configure(bg="black")
+    canvasTextfeld.pack()
+
+    intro()
+
+def intro():
+    global introText, canvasTextfeld,button1
+    intro1= "Du musst bis morgen ein Projekt abgeben!! "
+    intro2= "Du hast nur noch 10 Stunden Zeit! "
+    introText = canvasTextfeld.create_text(10,5, width=650, anchor=NW, text="", fill='white', font=("calibri", 45, "italic"))
+
+    for x in range(len(intro1)):
+        delay = 40*x
+        text = intro1[:x]
+        textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
+        canvasTextfeld.after(delay, textUpdate)
 
 
-def dmgCalc():
+    for x in range(len(intro2)):
+        delay2 = delay + 40*x
+        text = intro2[:x]
+        textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
+        canvasTextfeld.after(delay2 + 1000, textUpdate)
 
-    print(f"Der Boss hat {Boss1.leben} Leben, hat einen Base-Schaden von {Boss1.baseAttack} und ist vom Typ {Boss1.type}\n")
+    button = Button(spielfeld, text="test", bg="black", command=lambda: ersteRunde())
+    #canvasTextfeld.after(10000, button.place())
+    button1 = Button(spielfeld, text="Quit", bg="black", fg="white", command= lambda: ersteRunde())
+    canvasTextfeld.create_window(400,280,anchor="center", window=button1)
 
-    print(f"Das normale Monster hat {Normal1.leben} Leben, hat einen Base-Schaden von {Normal1.baseAttack} und ist vom typ {Normal1.type}")
 
+def ersteRunde():
+    global canvasTextfeld
+    canvasTextfeld.delete(introText)
+    button1.destroy()
+
+
+
+
+#Erstellen des Tkinter Fensters. Hintergrund wird auf schwarz gesetzt
 spielfeld = Tk()
-spielfeld.geometry("800x800")
 spielfeld.title("Pokemon in gut")
+spielfeld.geometry("800x800")
 spielfeld.configure(bg="black")
 
-#auswahl()
-canvastest = Canvas(spielfeld)
-canvastest.configure(bg= "black",)
-canvastest.grid(row= 10, column= 5)
-canvasText = canvastest.create_text(10,10, text="", anchor= NW, fill = 'white')
 
-intro = "Du musst bis morgen ein Projekt abgeben "
+setup()
 
-for x in range(len(intro)):
-    text = intro[:x]
-    textUpdate = lambda text=text: canvastest.itemconfigure(canvasText, text=text)
-    canvastest.after(40*x, textUpdate)
 
 spielfeld.mainloop()
+
+
+
+
+
+
+
 
 
 
