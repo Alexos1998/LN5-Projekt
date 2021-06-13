@@ -3,8 +3,6 @@ import time
 from tkinter import *
 from entities import *
 
-
-
 def setup():
     global spielfeld, canvasSpielfeld, canvasTextfeld, img
 
@@ -18,10 +16,10 @@ def setup():
     canvasTextfeld.pack()
 
 def intro():
-    global introText, canvasTextfeld,button1
+    global introText, canvasTextfeld
     intro1= "Du musst bis morgen ein Projekt abgeben!! "
     intro2= "Du hast nur noch 10 Stunden Zeit! "
-    introText = canvasTextfeld.create_text(10,5, width=650, anchor=NW, text="", fill="black", font=("AppleGothic", 45, "italic"))
+    introText = canvasTextfeld.create_text(10,5, width=750, anchor=NW, text="", font=("Press Start 2P", 35))
 
     for x in range(len(intro1)):
         delay = 40*x
@@ -41,8 +39,9 @@ def intro():
 
 def buttonErsteRunde():
     global button1
-    button1 = Button(spielfeld, text="Auf geht's", highlightthickness=0, bd=0,bg="white", fg="black", command=lambda: ersteRunde())
+    button1 = Button(spielfeld, text="Auf geht's", highlightthickness=0, bd=0, bg="white",fg="#333", command=lambda: ersteRunde())
     canvasTextfeld.create_window(400, 280, window=button1)
+    spielfeld.bind("<KeyPress-Return>", lambda b: ersteRunde())
 
 def figuren():
     global canvasSpielfeld, spielerFigur, figurAnzeige
@@ -57,13 +56,11 @@ def ersteRunde():
     #canvasSpielfeld.delete("figure")
     frage()
     spielfeld.after(delayFrage, lambda: menu())
-    menuNavigation():
+    menuNavigation()
 
 def menuNavigation():
-    global menuselection
-    menuselection = 0
 
-    spielfeld.bind("<KeyPress-Down>", lambda b: test(b))
+    spielfeld.bind("<KeyPress-Down>", lambda b:test(b))
     spielfeld.bind("<KeyPress-Up>", lambda b: test(b))
     spielfeld.bind("<KeyPress-Right>", lambda b: test(b))
     spielfeld.bind("<KeyPress-Left>", lambda b: test(b))
@@ -73,22 +70,22 @@ def menu():
     global menuButton1, menuButton2, menuButton3, canvasTextfeld, spielfeld, menuselection
 
     menuButton1 = Button(spielfeld, text="Power Nap", bg="white",
-                         highlightthickness=0, bd=0, fg="black",
-                         font=("Courier New", 25),
+                         highlightthickness=0, bd=0, fg="#333",
+                         font=("Press Start 2P", 25),
                          command=lambda: print("Funktioniert super"))
     canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W)
 
     menuButton2 = Button(spielfeld, text="Energy Booster", bg="white",
-                         highlightthickness=0, bd=0, fg="black",
-                         font=("Courier New", 20),
+                         highlightthickness=0, bd=0, fg="#333",
+                         font=("Press Start 2P", 20),
                          command=lambda: print("Funktioniert super"))
-    canvasTextfeld.create_window(100, 150, window=menuButton2, anchor=W)
+    canvasTextfeld.create_window(100, 170, window=menuButton2, anchor=W)
 
     menuButton3 = Button(spielfeld, text="Kaffe Booster", bg="white",
-                         highlightthickness=0, bd=0, fg="black",
-                         font=("Courier New", 20),
+                         highlightthickness=0, bd=0, fg="#333",
+                         font=("Press Start 2P", 20),
                          command=lambda: print("Funktioniert super"))
-    canvasTextfeld.create_window(100, 200, window=menuButton3, anchor=W)
+    canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W)
 
 
 def test(keystroke):
@@ -101,22 +98,22 @@ def test(keystroke):
             menuselection -= 1
 
     if menuselection < 1:
-        menuButton1.configure(font=("Courier New",25))
-        menuButton2.configure(font=("Courier New",20))
-        menuButton3.configure(font=("Courier New",20))
+        menuButton1.configure(font=("Press Start 2P",25))
+        menuButton2.configure(font=("Press Start 2P",20))
+        menuButton3.configure(font=("Press Start 2P",20))
     elif menuselection == 1:
-        menuButton2.configure(font=("Courier New",25))
-        menuButton1.configure(font=("Courier New",20))
-        menuButton3.configure(font=("Courier New",20))
+        menuButton2.configure(font=("Press Start 2P",25))
+        menuButton1.configure(font=("Press Start 2P",20))
+        menuButton3.configure(font=("Press Start 2P",20))
     elif menuselection > 1:
-        menuButton3.configure(font=("Courier New",25))
-        menuButton1.configure(font=("Courier New",20))
-        menuButton2.configure(font=("Courier New",20))
+        menuButton3.configure(font=("Press Start 2P",25))
+        menuButton1.configure(font=("Press Start 2P",20))
+        menuButton2.configure(font=("Press Start 2P",20))
 
 def frage():
     global canvasTextfeld, delayFrage
-    frageSpielbeginn = "Was willst du tun? "
-    frageSpielbeginnText = canvasTextfeld.create_text(10,5, width= 650, anchor = NW, text="", fill="black", font=("Helvetica", 30, "italic"))
+    frageSpielbeginn = "Moves "
+    frageSpielbeginnText = canvasTextfeld.create_text(10,5, width= 650, anchor = NW, text="", fill="#333", font=("Press Start 2P", 30))
 
     for x in range(len(frageSpielbeginn)):
         delayFrage = 40 * x
@@ -129,9 +126,9 @@ def frage():
 spielfeld = Tk()
 spielfeld.title("Pokemon in gut")
 spielfeld.geometry("800x800")
-spielfeld.configure(bg="black")
+spielfeld.configure(bg="#333")
 
-
+menuselection = 0
 
 setup()
 intro()
