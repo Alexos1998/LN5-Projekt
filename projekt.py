@@ -18,8 +18,8 @@ def setup():
     spielerFigur = PhotoImage(file="Assets/Gruppe.png")
     spielerFigurAnzeige = canvasSpielfeld.create_image(800, 330, anchor=W, image=spielerFigur)
 
-    projektFigur = PhotoImage(file="Assets/Gruppe.png")
-    projektFigurAnzeige = canvasSpielfeld.create_image(0, 100, anchor=E, image=projektFigur)
+    projektFigur = PhotoImage(file="Assets/coronavirus.png")
+    projektFigurAnzeige = canvasSpielfeld.create_image(0, 150, anchor=E, image=projektFigur)
 
     figuren(800, 0)
 
@@ -52,20 +52,18 @@ def figuren(frames, durchlaeufe):
 def healthBar(spieler,projekt):
 
 
-    currentHealthProjekt = 200 * projekt + 100
+    currentHealthProjekt = 200 * projekt + 123
     currentHealthSpieler = 200 * spieler + 500
 
-    KP = str(100*spieler) +"/ 100"
-
-    healthbarProjektWhite = canvasSpielfeld.create_rectangle(100, 100, 300, 120, fill="white")
-    healthbarProjektWhite = canvasSpielfeld.create_rectangle(100, 100, currentHealthProjekt, 120, fill="green")
+    healthbarProjektWhite = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="white")
+    healthbarProjektWhite = canvasSpielfeld.create_rectangle(123, 100, currentHealthProjekt, 120, fill="green")
 
     healthbarSpielerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white")
     healthbarSpielerWhite = canvasSpielfeld.create_rectangle(currentHealthSpieler, 400, 500, 380, fill="green")
 
-    kraftpunkte = canvasSpielfeld.create_text(77,112,text="KP:", font=("Press Start 2P", 15), tags="KP")
+    kraftpunkte = canvasSpielfeld.create_text(100,112,text="KP:", font=("Press Start 2P", 15), tags="KP")
     kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
-    currentKP = canvasSpielfeld.create_text(600, 440, text= KP, anchor= S, font=("Press Start 2P", 18), tags="KP")
+    currentKP = canvasSpielfeld.create_text(600, 440, text= str(100*spieler) +"/ 100", anchor= S, font=("Press Start 2P", 18), tags="KP")
 
     arrowSpieler = PhotoImage(file="Assets/Gruppe.png")
     decorationSpieler= canvasTextfeld.create_image(100,100, anchor=E, image=arrowSpieler)
