@@ -24,41 +24,75 @@ def setup():
     figuren(800, 0)
 
 def figuren(frames, durchlaeufe):
-    global canvasSpielfeld, spielerFigurAnzeige, projektFigurAnzeige
+    global spielerFigurAnzeige, projektFigurAnzeige
+
+    # movespielerFigur = lambda: canvasSpielfeld.move(spielerFigurAnzeige,-5,0);frames -= 5
+    # canvasSpielfeld.after(frames*2, movespielerFigur)
+    #
+    # moveprojektFigur = lambda: canvasSpielfeld.move(projektFigurAnzeige,+5,0)
+    # canvasSpielfeld.after(frames*2, moveprojektFigur)
+    # print(frames)
+
 
     movespielerFigur = lambda: canvasSpielfeld.move(spielerFigurAnzeige,-5,0);frames -= 5
-    canvasSpielfeld.after(frames*2, movespielerFigur)
+    canvasSpielfeld.after(durchlaeufe*10, movespielerFigur)
 
     moveprojektFigur = lambda: canvasSpielfeld.move(projektFigurAnzeige,+5,0)
-    canvasSpielfeld.after(frames*2, moveprojektFigur)
+    canvasSpielfeld.after(durchlaeufe*10, moveprojektFigur)
 
 
 
     if frames == 20:
         canvasSpielfeld.after(1700, lambda: intro())
+        canvasSpielfeld.after(1700, lambda: healthBar(1,1))
     else:
         durchlaeufe +=1
-        canvasSpielfeld.after(0, lambda: figuren(frames, durchlaeufe))
+        figuren(frames, durchlaeufe)
+
+def healthBar(spieler,projekt):
+
+
+    currentHealthProjekt = 200 * projekt + 100
+    currentHealthSpieler = 200 * spieler + 500
+
+    KP = str(100*spieler) +"/ 100"
+
+    healthbarProjektWhite = canvasSpielfeld.create_rectangle(100, 100, 300, 120, fill="white")
+    healthbarProjektWhite = canvasSpielfeld.create_rectangle(100, 100, currentHealthProjekt, 120, fill="green")
+
+    healthbarSpielerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white")
+    healthbarSpielerWhite = canvasSpielfeld.create_rectangle(currentHealthSpieler, 400, 500, 380, fill="green")
+
+    kraftpunkte = canvasSpielfeld.create_text(77,112,text="KP:", font=("Press Start 2P", 15), tags="KP")
+    kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
+    currentKP = canvasSpielfeld.create_text(600, 440, text= KP, anchor= S, font=("Press Start 2P", 18), tags="KP")
+
+    arrowSpieler = PhotoImage(file="Assets/Gruppe.png")
+    decorationSpieler= canvasTextfeld.create_image(100,100, anchor=E, image=arrowSpieler)
 
 def intro():
-    global introText, canvasTextfeld
-    intro1= "Ein wildes PROJEKT ist aufgetaucht! "
-    # intro2= "Du hast nur noch 10 Stunden Zeit! "
+    global introText, canvasTextfeld, canvasSpielfeld
+
+
+
     introText = canvasTextfeld.create_text(10,5, width=750, anchor=NW, text="", font=("Press Start 2P", 35))
 
+
+
+
+    intro1 = "Ein wildes PROJEKT ist aufgetaucht! "
     for x in range(len(intro1)):
         delay = 40*x
         text = intro1[:x]
         textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
         canvasTextfeld.after(delay, textUpdate)
 
-
+    # intro2= "Du hast nur noch 10 Stunden Zeit! "
     # for x in range(len(intro2)):
     #     delay2 = delay + 1500 + 40*x
     #     text = intro2[:x]
     #     textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
     #     canvasTextfeld.after(delay2, textUpdate)
-
 
     spielfeld.after(delay + 500, lambda: buttonErsteRunde())
 
@@ -94,8 +128,8 @@ def menu():
     canvasTextfeld.create_window(280, 0, window=menuListSpecial, anchor=NW)
 
     menuButton1 = Button(spielfeld, text="Power Nap", bg="#fff",
-                         highlightthickness=0, bd=0, fg="#000",
-                         font=("Press Start 2P", 25),
+                         highlightthickness=0, bd=0, fg="#555",
+                         font=("Press Start 2P", 20),
                          command=lambda: Move1())
     canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W)
 
@@ -149,24 +183,29 @@ def menuHighlight(keystroke):
         menuButton3.configure(text="Keine Idee mehr")
 
     if keystroke.keysym == "Down":
-        if menuSelectionUpDown < 2:
+        if menuSelectionUpDown < 3:
             menuSelectionUpDown += 1
     elif keystroke.keysym == "Up":
-        if menuSelectionUpDown > 0:
+        if menuSelectionUpDown > 1:
             menuSelectionUpDown -= 1
 
-    if menuSelectionUpDown == 0:
+    if menuSelectionUpDown == 1:
         menuButton1.configure(fg="black", font=("Press Start 2P",25))
         menuButton2.configure(fg="#555",font=("Press Start 2P",20))
         menuButton3.configure(fg="#555",font=("Press Start 2P",20))
-    elif menuSelectionUpDown == 1:
+    elif menuSelectionUpDown == 2:
         menuButton2.configure(fg="black", font=("Press Start 2P",25))
         menuButton1.configure(fg="#555",font=("Press Start 2P",20))
         menuButton3.configure(fg="#555",font=("Press Start 2P",20))
-    elif menuSelectionUpDown == 2:
+    elif menuSelectionUpDown == 3:
         menuButton3.configure(fg="black",font=("Press Start 2P",25))
         menuButton2.configure(fg="#555",font=("Press Start 2P",20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
+    elif menuSelectionUpDown == 0:
+        menuButton3.configure(fg="#555",font=("Press Start 2P",20))
+        menuButton2.configure(fg="#555",font=("Press Start 2P",20))
+        menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
+
 
 def action():
     te
