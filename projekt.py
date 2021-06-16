@@ -43,40 +43,49 @@ def figuren(frames, durchlaeufe):
 
     if frames == 20:
         canvasSpielfeld.after(1700, lambda: intro())
-        canvasSpielfeld.after(1700, lambda: healthBar(1,1))
+        canvasSpielfeld.after(1700, lambda: spielfeldGraphik(1,1))
 
     else:
         durchlaeufe +=1
         figuren(frames, durchlaeufe)
 
-def healthBar(spieler,projekt):
-    global currentKP, spielerArrow
-
-    spielerArrow = PhotoImage(file="Assets/arrowSpieler.png")
-    spielerHealthBarArrow = canvasSpielfeld.create_image(450, 425, anchor=W, image=spielerArrow)
+def spielfeldGraphik(spieler,projekt):
+    global currentKP, spielerArrow, nameSpieler, projektArrow
 
 
+    spielerName = canvasSpielfeld.create_text(123,90,text="PROJEKT", anchor=SW, font=("Press Start 2P", 18), tags="KP")
+    projektName = canvasSpielfeld.create_text(500, 370, text=nameSpieler, anchor= SW, font=("Press Start 2P", 18), tags="KP")
 
+    currentHealthBarProjekt = 200 * projekt + 123
+    currentHealthBarSpieler = 200 * spieler + 500
 
-    currentKPIndex = str(100*spieler) +"/ 100"
-    currentHealthProjekt = 200 * projekt + 123
-    currentHealthSpieler = 200 * spieler + 500
-
-    lifeBarColorSpieler = "green" if spieler > 0.8 else "orange" if spieler < 0.8 and spieler > 0.5 else "yellow" if spieler < 0.5 and spieler > 0.2 else "red"
-    lifeBarColorProjekt = "green" if projekt > 0.8 else "orange" if projekt < 0.8 and projekt > 0.5 else "yellow" if projekt < 0.5 and projekt > 0.2 else "red"
+    healthColorSpieler = "green" if spieler > 0.8 else "orange" if spieler < 0.8 and spieler > 0.5 else "yellow" if spieler < 0.5 and spieler > 0.2 else "red"
+    healthColorProjekt = "green" if projekt > 0.8 else "orange" if projekt < 0.8 and projekt > 0.5 else "yellow" if projekt < 0.5 and projekt > 0.2 else "red"
 
     healthbarProjektWhite = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="white")
-    healthbarProjektColor = canvasSpielfeld.create_rectangle(123, 100, currentHealthProjekt, 120, fill=lifeBarColorProjekt)
+    healthbarProjektColor = canvasSpielfeld.create_rectangle(123, 100, currentHealthBarProjekt, 120, fill=healthColorProjekt)
 
     healthbarSpielerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white")
-    healthbarSpielerColor = canvasSpielfeld.create_rectangle(currentHealthSpieler, 400, 500, 380, fill=lifeBarColorSpieler)
+    healthbarSpielerColor = canvasSpielfeld.create_rectangle(currentHealthBarSpieler, 400, 500, 380, fill=healthColorSpieler)
+
+
 
     kraftpunkte = canvasSpielfeld.create_text(100,112,text="KP:", font=("Press Start 2P", 15), tags="KP")
     kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
+
+    currentKPIndex = str(int(100 * spieler)) + "/ 100"
     if spieler == 1:
-        currentKP = canvasSpielfeld.create_text(600, 440, text= currentKPIndex, anchor= S, font=("Press Start 2P", 18))
+        currentKP = canvasSpielfeld.create_text(700, 425, text= currentKPIndex, anchor= E, font=("Press Start 2P", 18))
     else:
         canvasSpielfeld.itemconfigure(currentKP, text=currentKPIndex)
+
+    spielerArrow = PhotoImage(file="Assets/arrowSpieler.png")
+    spielerHealthBarArrow = canvasSpielfeld.create_image(410, 410, anchor=W, image=spielerArrow)
+
+    projektArrow = PhotoImage(file="Assets/arrowProjekt.png")
+    projektHealthBarArrow = canvasSpielfeld.create_image(45, 120, anchor=W, image=projektArrow)
+
+
 
 def intro():
     global introText, canvasTextfeld, canvasSpielfeld
@@ -134,8 +143,8 @@ def menu():
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W)
 
-    # selection = PhotoImage(file="Assets/selection.png")
-    # selectionMarker = canvasTextfeld.create_image(100, 100, anchor=E, image=selection)
+
+
 
     menuNavigation()
 
@@ -146,15 +155,11 @@ def menuNavigation():
     spielfeld.bind("<KeyPress-Up>", lambda b: menuHighlight(b))
     spielfeld.bind("<KeyPress-Right>", lambda b: menuHighlight(b))
     spielfeld.bind("<KeyPress-Left>", lambda b: menuHighlight(b))
-    spielfeld.bind("<KeyPress-Return>", lambda b: canvasSpielfeld.delete("all"))
+    spielfeld.bind("<KeyPress-Return>", lambda b: spielfeldGraphik(0.8,1 ))
 
 def menuHighlight(keystroke):
 
-    global menuSelectionUpDown, menuSelectionLeftRight
-
-    # moveMarkerDown = lambda: canvasTextfeld.move(selectionMarker, 0, -70)
-    # moveMarkerUp = lambda: canvasTextfeld.move(selectionMarker, 0,70)
-
+    global menuSelectionUpDown, menuSelectionLeftRight, selection
 
     if keystroke.keysym =="Right" or keystroke == "Right":
         menuSelectionUpDown = 0
@@ -178,24 +183,28 @@ def menuHighlight(keystroke):
         menuButton2.configure(text="Nachtschicht")
         menuButton3.configure(text="Keine Idee mehr")
 
+
+    selection = PhotoImage(file="Assets/selection.png")
+
     if keystroke.keysym == "Down":
         if menuSelectionUpDown < 3:
-            # canvasTextfeld.after(0, moveMarkerDown)
             menuSelectionUpDown += 1
     elif keystroke.keysym == "Up":
         if menuSelectionUpDown > 1:
-            # canvasTextfeld.after(0, moveMarkerUp)
             menuSelectionUpDown -= 1
 
     if menuSelectionUpDown == 1:
+        selectionMarker = canvasTextfeld.create_image(95, 95, anchor=E, image=selection)
         menuButton1.configure(fg="black", font=("Press Start 2P",25))
         menuButton2.configure(fg="#555",font=("Press Start 2P",20))
         menuButton3.configure(fg="#555",font=("Press Start 2P",20))
     elif menuSelectionUpDown == 2:
+        selectionMarker = canvasTextfeld.create_image(95, 165, anchor=E, image=selection)
         menuButton2.configure(fg="black", font=("Press Start 2P",25))
         menuButton1.configure(fg="#555",font=("Press Start 2P",20))
         menuButton3.configure(fg="#555",font=("Press Start 2P",20))
     elif menuSelectionUpDown == 3:
+        selectionMarker = canvasTextfeld.create_image(95, 235, anchor=E, image=selection)
         menuButton3.configure(fg="black",font=("Press Start 2P",25))
         menuButton2.configure(fg="#555",font=("Press Start 2P",20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
@@ -206,7 +215,7 @@ def menuHighlight(keystroke):
 
 
 def action():
-    te
+    print("ich tue gar nichts")
 
 #Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt
 spielfeld = Tk()
@@ -217,6 +226,8 @@ spielfeld.configure(bg="#555")
 
 menuSelectionUpDown = 0
 menuSelectionLeftRight = 0
+
+nameSpieler = "GRUPPE"
 
 setup()
 
