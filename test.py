@@ -113,9 +113,10 @@ def healthBarReductionSpieler(durchlaeufe, healthDiff):
     canvasSpielfeld.after(durchlaeufe * 40, changeKPIndex)
 
     healthColor = "green" if currentKPIndex >= 80 else "orange" if currentKPIndex < 80 and currentKPIndex >= 50 else "yellow" if currentKPIndex < 50 and currentKPIndex >= 20 else "red"
-    print(healthColor, currentKPIndex)
-    if currentKPIndex == 79:
-        changeHealthbarColorSpieler("orange")
+    #print(healthColor, currentKPIndex)
+    if currentKPIndex < 79:
+        changeColor = lambda: canvasSpielfeld.itemconfigure(healthbarSpielerColor, fill=healthColor)
+        canvasSpielfeld.after(durchlaeufe * 40, changeColor)
 
     if durchlaeufe < healthDiff:
         durchlaeufe += 1
@@ -124,17 +125,19 @@ def healthBarReductionSpieler(durchlaeufe, healthDiff):
 
 def healthBarReductionProjekt(durchlaeufe, healthDiff):
 
+    currentKPIndex = currentLifeProjekt*100 - durchlaeufe
+    reduceBalken = lambda: canvasSpielfeld.coords(healthbarProjektColor, 123, 100, 323- durchlaeufe*2, 120)
+    canvasSpielfeld.after(durchlaeufe * 40, reduceBalken)
 
-    reduceBalken = lambda: canvasSpielfeld.coords(healthbarProjektColor, 123, 100, 323- durchlaeufe, 120)
-    canvasSpielfeld.after(durchlaeufe * 10, reduceBalken)
+    healthColor = "green" if currentKPIndex >= 80 else "orange" if currentKPIndex < 80 and currentKPIndex >= 50 else "yellow" if currentKPIndex < 50 and currentKPIndex >= 20 else "red"
+    
+    if currentKPIndex < 79:
+        changeColor = lambda: canvasSpielfeld.itemconfigure(healthbarProjektColor, fill=healthColor)
+        canvasSpielfeld.after(durchlaeufe * 40, changeColor)
 
     if durchlaeufe < healthDiff:
         durchlaeufe += 1
         healthBarReductionProjekt(durchlaeufe, healthDiff)
-
-def changeHealthBarColorSpieler(color):
-
-    canvasSpielfeld.configure(healthbarSpielerColor, fill=color)
 
 
 def intro():
@@ -194,9 +197,6 @@ def menu():
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W)
 
-
-
-
     menuNavigation()
 
 def menuNavigation():
@@ -206,7 +206,7 @@ def menuNavigation():
     spielfeld.bind("<KeyPress-Up>", lambda b: menuHighlight(b))
     spielfeld.bind("<KeyPress-Right>", lambda b: menuHighlight(b))
     spielfeld.bind("<KeyPress-Left>", lambda b: menuHighlight(b))
-    spielfeld.bind("<KeyPress-Return>", lambda b: lifeAnimation(0.74,1))
+    spielfeld.bind("<KeyPress-Return>", lambda b: lifeAnimation(0.1,0.5))
 
 def menuHighlight(keystroke):
 
