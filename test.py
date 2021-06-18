@@ -4,34 +4,30 @@ from tkinter import *
 from tkinter.font import Font
 
 def setup():
-    global canvasSpielfeld, canvasTextfeld, spielerFigurAnzeige, spielerFigur, projektFigurAnzeige, projektFigur
+    global canvasSpielfeld, canvasTextfeld, spielerFigurAnzeige, spielerFigur, projektFigurAnzeige, projektFigur, balken
 
-
-    # Erstellen eines Canvas für den oberen Spielfeldbereich, in den später Bilder und Animationen geladen werden
     canvasSpielfeld = Canvas(spielfeld, height=500, width=800)
     canvasSpielfeld.configure(bg="#fff")
     canvasSpielfeld.pack()
 
-    #Erstellen des Canvas, zur Darstellung von Spieltext und des Kampf-Menüs
+    #Erstellen des Canvas, zur Darstellung von Spieltext und Buttons
     canvasTextfeld = Canvas(spielfeld, height=300, width=800)
     canvasTextfeld.configure(bg="#fff")
     canvasTextfeld.pack()
 
-    #Laden der Bilddateien für die Gruppe und das Projekt mit der Funktion PhotoImage.
-    #Darstellung des Bildes auf dem Canvas mit create_image und entsprehcnenden xy-Koordinaten
     spielerFigur = PhotoImage(file="Assets/Images/Gruppe.png")
     spielerFigurAnzeige = canvasSpielfeld.create_image(800, 330, anchor=W, image=spielerFigur)
 
     projektFigur = PhotoImage(file="Assets/Images/coronavirus.png")
     projektFigurAnzeige = canvasSpielfeld.create_image(0, 150, anchor=E, image=projektFigur)
 
+    #balken = canvasSpielfeld.create_rectangle(700, 370, 500, 420, fill="green")
 
-  #Funktion figuren wird mit Übergabeparamter (800,0) ausgeführt. 800 basiert hier auf dem Pixelwert des geladenen Bilds für die Gruppe.
+
     figuren(800, 0)
 
-  #Funktion zur Animation der Figuren
 def figuren(frames, durchlaeufe):
-    global spielerFigurAnzeige, projektFigurAnzeige, currentKP
+    global spielerFigurAnzeige, projektFigurAnzeige, currentKP, balken
 
 
     # movespielerFigur = lambda: canvasSpielfeld.move(spielerFigurAnzeige,-5,0);frames -= 5
@@ -39,13 +35,17 @@ def figuren(frames, durchlaeufe):
     #
     # moveprojektFigur = lambda: canvasSpielfeld.move(projektFigurAnzeige,+5,0)
     # canvasSpielfeld.after(frames*2, moveprojektFigur)
-  #Move-Methode wird genutzt um die Bilder bei jedem Durchlauf um 5Pixel nach links oder rechts zu verschieben.
-  #Anonyme-Funktion lambda wird bei der Definition verwendet um die direkte Ausführung zu verhindern.
-    movespielerFigur = lambda: canvasSpielfeld.move(spielerFigurAnzeige,-5,0);frames -= 5
+
+    movespielerFigur = lambda: canvasSpielfeld.move(spielerFigurAnzeige,-5,0)
     canvasSpielfeld.after(durchlaeufe*10, movespielerFigur)
 
     moveprojektFigur = lambda: canvasSpielfeld.move(projektFigurAnzeige,+5,0)
     canvasSpielfeld.after(durchlaeufe*10, moveprojektFigur)
+
+    # movebalken = lambda: canvasSpielfeld.coords(balken, 700- durchlaeufe , 400, 500, 380)
+    # canvasSpielfeld.after(durchlaeufe * 10, movebalken)
+
+    frames -= 5
 
     if frames == 20:
         canvasSpielfeld.after(1700, lambda: intro())
@@ -56,34 +56,11 @@ def figuren(frames, durchlaeufe):
         figuren(frames, durchlaeufe)
 
 def spielfeldGraphik(spieler,projekt):
-    global currentKP, spielerArrow, nameSpieler, projektArrow
+    global currentKP, spielerArrow, nameSpieler, projektArrow, healthbarProjektWhite, healthbarProjektColor, healthbarSpielerWhite, healthbarSpielerColor, currentHealthBarSpieler
 
 
     spielerName = canvasSpielfeld.create_text(123,90,text="PROJEKT", anchor=SW, font=("Press Start 2P", 18), tags="KP")
     projektName = canvasSpielfeld.create_text(500, 370, text=nameSpieler, anchor= SW, font=("Press Start 2P", 18), tags="KP")
-
-    currentHealthBarProjekt = 200 * projekt + 123
-    currentHealthBarSpieler = 200 * spieler + 500
-
-    healthColorSpieler = "green" if spieler >= 0.8 else "orange" if spieler < 0.8 and spieler >= 0.5 else "yellow" if spieler < 0.5 and spieler >= 0.2 else "red"
-    healthColorProjekt = "green" if projekt >= 0.8 else "orange" if projekt < 0.8 and projekt >= 0.5 else "yellow" if projekt < 0.5 and projekt >= 0.2 else "red"
-
-    healthbarProjektWhite = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="white")
-    healthbarProjektColor = canvasSpielfeld.create_rectangle(123, 100, currentHealthBarProjekt, 120, fill=healthColorProjekt)
-
-    healthbarSpielerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white")
-    healthbarSpielerColor = canvasSpielfeld.create_rectangle(currentHealthBarSpieler, 400, 500, 380, fill=healthColorSpieler)
-
-
-
-    kraftpunkte = canvasSpielfeld.create_text(100,112,text="KP:", font=("Press Start 2P", 15), tags="KP")
-    kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
-
-    currentKPIndex = str(int(100 * spieler)) + "/ 100"
-    if spieler == 1:
-        currentKP = canvasSpielfeld.create_text(700, 425, text= currentKPIndex, anchor= E, font=("Press Start 2P", 18))
-    else:
-        canvasSpielfeld.itemconfigure(currentKP, text=currentKPIndex)
 
     spielerArrow = PhotoImage(file="Assets/Images/arrowSpieler.png")
     spielerHealthBarArrow = canvasSpielfeld.create_image(410, 410, anchor=W, image=spielerArrow)
@@ -91,6 +68,73 @@ def spielfeldGraphik(spieler,projekt):
     projektArrow = PhotoImage(file="Assets/Images/arrowProjekt.png")
     projektHealthBarArrow = canvasSpielfeld.create_image(45, 120, anchor=W, image=projektArrow)
 
+    # healthColorSpieler = "green" if spieler >= 0.8 else "orange" if spieler < 0.8 and spieler >= 0.5 else "yellow" if spieler < 0.5 and spieler >= 0.2 else "red"
+    # healthColorProjekt = "green" if projekt >= 0.8 else "orange" if projekt < 0.8 and projekt >= 0.5 else "yellow" if projekt < 0.5 and projekt >= 0.2 else "red"
+
+    if spieler == 1:
+        currentHealthBarProjekt = 200 * projekt + 123
+        currentHealthBarSpieler = 200 * spieler + 500
+
+        healthbarProjektWhite = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="white")
+        healthbarProjektColor = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="green")
+
+        healthbarSpielerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white")
+        healthbarSpielerColor = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="green")
+
+        kraftpunkte = canvasSpielfeld.create_text(100,112,text="KP:", font=("Press Start 2P", 15), tags="KP")
+        kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
+
+        currentKPIndex = str(int(100 * spieler)) + "/ 100"
+
+        currentKP = canvasSpielfeld.create_text(700, 425, text= "100/ 100", anchor= E, font=("Press Start 2P", 18))
+
+
+def lifeAnimation(spieler,projekt):
+    global healthbarProjektColor, healthbarSpielerColor, currentLifeProjekt, currentLifeSpieler, changeLifeColor, balken
+
+    healthDiffSpieler = int(round(currentLifeSpieler - spieler,2)*100)
+    healthDiffProjekt = int(round(currentLifeProjekt - projekt,2)*100)
+
+
+    #if durchlaeufeS > 0:
+    healthBarReductionSpieler(1, healthDiffSpieler)
+    # if durchlaeufeP > 0:
+    healthBarReductionProjekt(1, healthDiffProjekt)
+
+def healthBarReductionSpieler(durchlaeufe, healthDiff):
+    global currentLifeSpieler, healthbarSpielerColor
+
+    reduceBalken = lambda: canvasSpielfeld.coords(healthbarSpielerColor, 700 - durchlaeufe*2, 400, 500, 380)
+    canvasSpielfeld.after(durchlaeufe * 40, reduceBalken)
+
+
+    currentKPIndex = currentLifeSpieler*100 - durchlaeufe
+    changeKPIndex = lambda: canvasSpielfeld.itemconfigure(currentKP, text=str(currentKPIndex) +"/ 100")
+    canvasSpielfeld.after(durchlaeufe * 40, changeKPIndex)
+
+    healthColor = "green" if currentKPIndex >= 80 else "orange" if currentKPIndex < 80 and currentKPIndex >= 50 else "yellow" if currentKPIndex < 50 and currentKPIndex >= 20 else "red"
+    print(healthColor, currentKPIndex)
+    if currentKPIndex == 79:
+        changeHealthbarColorSpieler("orange")
+
+    if durchlaeufe < healthDiff:
+        durchlaeufe += 1
+        healthBarReductionSpieler(durchlaeufe, healthDiff)
+
+
+def healthBarReductionProjekt(durchlaeufe, healthDiff):
+
+
+    reduceBalken = lambda: canvasSpielfeld.coords(healthbarProjektColor, 123, 100, 323- durchlaeufe, 120)
+    canvasSpielfeld.after(durchlaeufe * 10, reduceBalken)
+
+    if durchlaeufe < healthDiff:
+        durchlaeufe += 1
+        healthBarReductionProjekt(durchlaeufe, healthDiff)
+
+def changeHealthBarColorSpieler(color):
+
+    canvasSpielfeld.configure(healthbarSpielerColor, fill=color)
 
 
 def intro():
@@ -144,7 +188,8 @@ def menu():
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 170, window=menuButton2, anchor=W)
 
-    menuButton3 = Button(spielfeld, text="Kaffee Booster", bg="#fff",
+    menuButton3 = Button(spielfeld,
+                         text="Kaffee Booster", bg="#fff",
                          highlightthickness=0, bd=0, fg="#555", anchor=W,
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W)
@@ -161,7 +206,7 @@ def menuNavigation():
     spielfeld.bind("<KeyPress-Up>", lambda b: menuHighlight(b))
     spielfeld.bind("<KeyPress-Right>", lambda b: menuHighlight(b))
     spielfeld.bind("<KeyPress-Left>", lambda b: menuHighlight(b))
-    spielfeld.bind("<KeyPress-Return>", lambda b: spielfeldGraphik(0.19,0.55))
+    spielfeld.bind("<KeyPress-Return>", lambda b: lifeAnimation(0.74,1))
 
 def menuHighlight(keystroke):
 
@@ -200,17 +245,17 @@ def menuHighlight(keystroke):
             menuSelectionUpDown -= 1
 
     if menuSelectionUpDown == 1:
-        selectionMarker = canvasTextfeld.create_image(95, 95, anchor=E, image=selection)
+        selectionMarker = canvasTextfeld.create_image(95, 97, anchor=E, image=selection)
         menuButton1.configure(fg="black", font=("Press Start 2P",25))
         menuButton2.configure(fg="#555",font=("Press Start 2P",20))
         menuButton3.configure(fg="#555",font=("Press Start 2P",20))
     elif menuSelectionUpDown == 2:
-        selectionMarker = canvasTextfeld.create_image(95, 165, anchor=E, image=selection)
+        selectionMarker = canvasTextfeld.create_image(95, 167, anchor=E, image=selection)
         menuButton2.configure(fg="black", font=("Press Start 2P",25))
         menuButton1.configure(fg="#555",font=("Press Start 2P",20))
         menuButton3.configure(fg="#555",font=("Press Start 2P",20))
     elif menuSelectionUpDown == 3:
-        selectionMarker = canvasTextfeld.create_image(95, 235, anchor=E, image=selection)
+        selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection)
         menuButton3.configure(fg="black",font=("Press Start 2P",25))
         menuButton2.configure(fg="#555",font=("Press Start 2P",20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
@@ -221,7 +266,7 @@ def menuHighlight(keystroke):
 
 
 def action():
-    print("ich tue gar nichts")
+    dd
 
 #Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt
 spielfeld = Tk()
@@ -232,11 +277,11 @@ spielfeld.configure(bg="#555")
 
 menuSelectionUpDown = 0
 menuSelectionLeftRight = 0
+currentLifeProjekt = 1
+currentLifeSpieler = 1
 
 nameSpieler = "GRUPPE"
 
 setup()
 
-
 spielfeld.mainloop()
-
