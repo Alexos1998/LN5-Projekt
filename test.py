@@ -29,21 +29,11 @@ def setup():
 def figuren(frames, durchlaeufe):
     global spielerFigurAnzeige, projektFigurAnzeige, currentKP, balken
 
-
-    # movespielerFigur = lambda: canvasSpielfeld.move(spielerFigurAnzeige,-5,0);frames -= 5
-    # canvasSpielfeld.after(frames*2, movespielerFigur)
-    #
-    # moveprojektFigur = lambda: canvasSpielfeld.move(projektFigurAnzeige,+5,0)
-    # canvasSpielfeld.after(frames*2, moveprojektFigur)
-
     movespielerFigur = lambda: canvasSpielfeld.move(spielerFigurAnzeige,-5,0)
     canvasSpielfeld.after(durchlaeufe*10, movespielerFigur)
 
     moveprojektFigur = lambda: canvasSpielfeld.move(projektFigurAnzeige,+5,0)
     canvasSpielfeld.after(durchlaeufe*10, moveprojektFigur)
-
-    # movebalken = lambda: canvasSpielfeld.coords(balken, 700- durchlaeufe , 400, 500, 380)
-    # canvasSpielfeld.after(durchlaeufe * 10, movebalken)
 
     frames -= 5
 
@@ -152,13 +142,13 @@ def intro():
         textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
         canvasTextfeld.after(delay, textUpdate)
 
-    spielfeld.after(delay + 500, lambda: buttonErsteRunde())
+    spielfeld.after(delay + 200, lambda: buttonErsteRunde())
 
 def buttonErsteRunde():
     global button1
 
-    button1 = Button(spielfeld, text="Auf geht's", highlightthickness=0, bd=0, bg="#fff",fg="#555", command=lambda: ersteRunde())
-    canvasTextfeld.create_window(400, 280, window=button1)
+    button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555",anchor=S, font=("Press Start 2P", 23), command=lambda: ersteRunde())
+    canvasTextfeld.create_window(400, 270, window=button1)
     spielfeld.bind("<KeyPress-Return>", lambda b: ersteRunde())
 
 def ersteRunde():
@@ -264,9 +254,8 @@ def menuHighlight(keystroke):
         menuButton2.configure(fg="#555",font=("Press Start 2P",20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
 
-
 def action():
-    dd
+    print("test")
 
 #Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt
 spielfeld = Tk()
@@ -277,8 +266,6 @@ spielfeld.configure(bg="#555")
 
 menuSelectionUpDown = 0
 menuSelectionLeftRight = 0
-currentLifeProjekt = 1
-currentLifeSpieler = 1
 
 nameSpieler = "GRUPPE"
 
