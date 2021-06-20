@@ -53,9 +53,9 @@ def spielfeldGraphik(spieler,projekt):
     #Prozentuale Leben des spielers werden in einem String dargestellt um als Text zur Darstelung weitergegben werden zu können
     currentKPIndex = str(int(100 * spieler)) + "/ 100"
 
-    #Überpüfung ob der Spieler volle Leben hat (1 = 100%)
+    #Überpüfung ob die Variable durchlauf 1 ist
     if durchlauf == 1:
-        # Aktuellen Leben werden als Text dargestellt, wenn der Spieler 100% Leben hat
+        # Aktuellen Leben des Spielers werden als Text dargestellt. Erstellung des textes geschieht also nur im 1sten Durchlauf
         canvasSpielfeld.create_text(700, 425, text= currentKPIndex, anchor= E, font=("Press Start 2P", 18), tags="currentKP")
         durchlauf += 1
     else:
@@ -77,22 +77,19 @@ def menu():
     #3 Actions-Knöpfe werden zum ausführen der Kampsactionen benutzt
     menuListMoves = Button(spielfeld, text="Moves", bg="#fff", highlightthickness=0, bd=0, fg="#555", font=("Press Start 2P", 30), command = lambda: changeMenu("menu"))
     canvasTextfeld.create_window(10, 0, window=menuListMoves, anchor=NW)
-
     menuListSpecial = Button(spielfeld, text="Spezial", bg="#fff",highlightthickness=0, bd=0, fg="#555", font=("Press Start 2P", 30), command = lambda: changeMenu("spezial"))
     canvasTextfeld.create_window(280, 0, window=menuListSpecial, anchor=NW)
-
     menuButton1 = Button(spielfeld, text="Power Nap", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20),command = lambda: spielfeldGraphik(1,0.8))
     canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W)
-
     menuButton2 = Button(spielfeld, text="Energy Booster", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20), command = lambda: spielfeldGraphik(0.8,0.8))
     canvasTextfeld.create_window(100, 170, window=menuButton2, anchor=W)
-
     menuButton3 = Button(spielfeld, text="Kaffee Booster", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20), command = lambda: action(3))
     canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W)
 
 def changeMenu(changemenuspezial):
     global selection
 
+    #Abfrage welcher Parameter
     if changemenuspezial =="menu":
         if selection == 1:
             selection -= 0
@@ -111,16 +108,21 @@ def action():
     print("ich tue gar nichts")
 
 
-#Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt
+#Erstellen des Tkinter Fensters. Einstellungen für Fenster-Namen (title), Hintergrundfarbe (configure) und Fenstergröße (geometry) werden mit den
+# entsprechenden Methoden angepasst
 spielfeld = Tk()
 spielfeld.title("Pokemon in gut")
 spielfeld.geometry("800x800")
 spielfeld.configure(bg="#555")
 
-#Definieren einiger globaler Variablen die später gebraucht werden
+#Definieren einiger globaler Variablen die später gebraucht werden:
+# selection - wird für die Seiten im Auswahlmenü verwendet
 selection = 0
+# durchlauf - wird für die Überprüfung verwendet, ob die grafische Darstellung der erste Durchlauf ist
 durchlauf = 1
+
 nameSpieler = "GRUPPE"
+
+#setup-Funktion wird ausgeführt
 setup()
 spielfeld.mainloop()
-
