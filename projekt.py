@@ -47,7 +47,7 @@ def figurenMove(frames, durchlaeufe):
 
 
 def spielfeldGraphik():
-    global currentKP, playerArrow, projectArrow, healthbarProjectWhite, healthbarProjectColor, healthbarPlayerWhite, healthbarPlayerColor, currentHealthBarPlayer
+    global currentKPIndex, playerArrow, projectArrow, healthbarProjectWhite, healthbarProjectColor, healthbarPlayerWhite, healthbarPlayerColor, currentHealthBarPlayer
 
     playerName = canvasSpielfeld.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18))
     projectName = canvasSpielfeld.create_text(500, 370, text="Gruppe", anchor=SW, font=("Press Start 2P", 18))
@@ -67,7 +67,7 @@ def spielfeldGraphik():
     kraftpunkte = canvasSpielfeld.create_text(100, 112, text="KP:", font=("Press Start 2P", 15), tags="KP")
     kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
 
-    currentKP = canvasSpielfeld.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18))
+    currentKPIndex = canvasSpielfeld.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18))
 
 
 def intro():
@@ -181,18 +181,18 @@ def menuHighlight(keystroke):
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.8,1))
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.2,0))
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.8,0.5))
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.3,0))
     elif menuSelectionUpDown == 2:
         selectionMarker = canvasTextfeld.create_image(95, 167, anchor=E, image=selection)
         menuButton2.configure(fg="black", font=("Press Start 2P", 25))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.8,0.8))
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0.2))
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.5,0.5))
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0.3))
     elif menuSelectionUpDown == 3:
         selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection)
         menuButton3.configure(fg="black", font=("Press Start 2P", 25))
@@ -201,7 +201,7 @@ def menuHighlight(keystroke):
         if menuSelectionLeftRight == 0:
             spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0))
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.5,0.2))
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.5,0.5))
     elif menuSelectionUpDown == 0:
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
@@ -210,20 +210,19 @@ def menuHighlight(keystroke):
 
 
 def healthDiffCalc(player, project):
-    global healthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer, newHealthPlayer, newHealthProject
+    global healthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer, dmgProject, dmgPlayer
 
-    if player < currentLifePlayer:
+    if player > 0:
         dmgAnimationPlayer(1)
-        newHealthPlayer = player
-        healthDiffPlayer = int(round(currentLifePlayer - player, 2) * 100)
-        canvasSpielfeld.after(500, lambda: healthBarReductionPlayer(1, healthDiffPlayer))
+        dmgPlayer = player
+        healthReductionPlayer = int(round(player * 100))
+        canvasSpielfeld.after(500, lambda: healthBarReductionPlayer(1, healthReductionPlayer))
 
-    if project < currentLifeProject:
-        newHealthProject = project
+    if project > 0:
         dmgAnimationProject(1)
-        healthDiffProject = int(round(currentLifeProject - project, 2) * 100)
-        canvasSpielfeld.after(500, lambda: healthBarReductionProject(1, healthDiffProject))
-
+        dmgProject = project
+        healthReductionProject = int(round(project * 100))
+        canvasSpielfeld.after(500, lambda: healthBarReductionProject(1, healthReductionProject))
 
 def dmgAnimationPlayer(durchlaeufe):
 
@@ -249,47 +248,53 @@ def dmgAnimationProject(durchlaeufe):
         dmgAnimationProject(durchlaeufe)
 
 
-def healthBarReductionPlayer(durchlaeufe, healthDiff):
-    global currentLifePlayer, newHealthPlayer
+def healthBarReductionPlayer(durchlaeufe, healthReduction):
+    global currentLifePlayer
 
-    currentHealthBarPlayer = currentLifePlayer * 200 + 500
+    currentKP = round(currentLifePlayer * 100 - durchlaeufe)
+    if currentKP < 0:
+        currentKP = 0
 
-    reduceBalken = lambda: canvasSpielfeld.coords(healthbarPlayerColor, currentHealthBarPlayer - durchlaeufe * 2, 400, 500, 380)
+    reduceBalken = lambda: canvasSpielfeld.coords(healthbarPlayerColor, 500+ currentKP * 2, 400, 500, 380)
     canvasSpielfeld.after(durchlaeufe * 40, reduceBalken)
 
-    currentKPIndex = round(currentLifePlayer * 100 - durchlaeufe)
-    changeKPIndex = lambda: canvasSpielfeld.itemconfigure(currentKP, text=str(currentKPIndex) + "/ 100")
+    changeKPIndex = lambda: canvasSpielfeld.itemconfigure(currentKPIndex, text=str(currentKP) + "/ 100")
     canvasSpielfeld.after(durchlaeufe * 40, changeKPIndex)
 
-    healthColor = "green" if currentKPIndex >= 80 else "orange" if currentKPIndex < 80 and currentKPIndex >= 50 else "yellow" if currentKPIndex < 50 and currentKPIndex >= 20 else "red"
+    healthColor = "green" if currentKP >= 80 else "yellow" if currentKP < 80 and currentKP >= 50 else "orange" if currentKP < 50 and currentKP >= 20 else "red"
 
     changeColor = lambda: canvasSpielfeld.itemconfigure(healthbarPlayerColor, fill=healthColor)
     canvasSpielfeld.after(durchlaeufe * 40, changeColor)
 
-    if durchlaeufe < healthDiff:
+    if durchlaeufe < healthReduction:
         durchlaeufe += 1
-        healthBarReductionPlayer(durchlaeufe, healthDiff)
+        healthBarReductionPlayer(durchlaeufe, healthReduction)
     else:
-        currentLifePlayer = newHealthPlayer
+        currentLifePlayer -= dmgPlayer
 
 
-def healthBarReductionProject(durchlaeufe, healthDiff):
-    global currentLifeProject, newHealthProject
+def healthBarReductionProject(durchlaeufe, healthReduction):
+    global currentLifeProject
 
-    currentHealthBarProject = currentLifeProject * 200 + 123
-    currentKPIndex = currentLifeProject * 100 - durchlaeufe
-    reduceBalken = lambda: canvasSpielfeld.coords(healthbarProjectColor, 123, 100, currentHealthBarProject - durchlaeufe * 2, 120)
+    #currentHealthBarProject = currentLifeProject * 200 + 123
+
+    currentKP = round(currentLifeProject * 100 - durchlaeufe)
+    if currentKP < 0:
+        currentKP = 0
+
+    reduceBalken = lambda: canvasSpielfeld.coords(healthbarProjectColor, 123, 100, 123 + currentKP * 2, 120)
     canvasSpielfeld.after(durchlaeufe * 40, reduceBalken)
 
-    healthColor = "green" if currentKPIndex >= 80 else "orange" if currentKPIndex < 80 and currentKPIndex >= 50 else "yellow" if currentKPIndex < 50 and currentKPIndex >= 20 else "red"
+    healthColor = "green" if currentKP >= 80 else "yellow" if currentKP < 80 and currentKP >= 50 else "orange" if currentKP < 50 and currentKP >= 20 else "red"
     changeColor = lambda: canvasSpielfeld.itemconfigure(healthbarProjectColor, fill=healthColor)
     canvasSpielfeld.after(durchlaeufe * 40, changeColor)
 
-    if durchlaeufe < healthDiff:
+    if durchlaeufe < healthReduction:
         durchlaeufe += 1
-        healthBarReductionProject(durchlaeufe, healthDiff)
+        healthBarReductionProject(durchlaeufe, healthReduction)
     else:
-        currentLifeProject = newHealthProject
+
+        currentLifeProject -= dmgProject
 
 
 # Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt

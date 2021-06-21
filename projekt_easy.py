@@ -6,9 +6,10 @@ def setup():
 
     # Erstellen eines Canvas für den oberen Spielfeldbereich, in den später Bilder und Animationen geladen werden
     canvasSpielfeld = Canvas(spielfeld, height=500, width=800, bg="#fff")
+    # Laden eines Tkinter Elements mit der Methode .pack() - Element wird zentriert und so weit oben wie möglich platziert
     canvasSpielfeld.pack()
 
-    #Erstellen des Canvas, zur Darstellung von Spieltext und des Kampf-Menüs
+    #Erstellen eines Canvas zur Darstellung von Spieltext und des Kampf-Menüs
     canvasTextfeld = Canvas(spielfeld, height=300, width=800, bg="#fff")
     canvasTextfeld.pack()
 
@@ -20,20 +21,21 @@ def setup():
     projektFigur = PhotoImage(file="Assets/Images/coronavirus.png")
     projektFigurAnzeige = canvasSpielfeld.create_image(780, 150, anchor=E, image=projektFigur)
 
-    # Erstellen des Intro-Texts. Hier wird mit tags="" eine Art Anker gesetzt, über den das Objekt vom Modul aufgerufen werden kann
+    # Erstellen des Intro-Texts. Hier wird mit tags="intro" eine Art Anker gesetzt, über den das Objekt vom Modul aufgerufen werden kann
     introText = canvasTextfeld.create_text(10,5, width=750, anchor=NW, text="Ein wildes PROJEKT ist aufgetaucht!", font=("Press Start 2P", 35), tags="intro")
 
+    # Erstellen eine Buttons zum laden der Funktion ersteRunde()
     button1 = Button(spielfeld, text="Auf gehts",highlightthickness=0, bd=0, bg="#fff",fg="#555",command=lambda: ersteRunde())
     canvasTextfeld.create_window(400, 280, window=button1)
 
     spielfeldGraphik(1,1)
 
 def spielfeldGraphik(spieler,projekt):
-    global nameSpieler, durchlauf
+    global durchlauf
 
     # Darstellung der Namen auf dem Spielfeld. Der Name des Spielers wird basierend auf der Eingabe am Anfang definiert
     canvasSpielfeld.create_text(123,90,text="PROJEKT", anchor=SW, font=("Press Start 2P", 18))
-    canvasSpielfeld.create_text(500, 370, text=nameSpieler, anchor= SW, font=("Press Start 2P", 18))
+    canvasSpielfeld.create_text(500, 370, text="GRUPPE", anchor= SW, font=("Press Start 2P", 18))
 
     # Prozentuale Leben des Spielers und des Projekts werden umgerechnet um als x-Koordinate für die darstellung der
     # Lebensbalken
@@ -62,47 +64,56 @@ def spielfeldGraphik(spieler,projekt):
         # Anzeige der aktuellen Leben wird basierend auf den neuen prozentualen Leben verändert
         canvasSpielfeld.itemconfigure("currentKP", text=currentKPIndex)
 
+#Funktion zum Laden der ersten Runde
 def ersteRunde():
     global canvasTextfeld, delayFrage
 
+    #Mit der Methode .delete wird ein Objekt auf dem Canvas gelöscht. Das zu löschende Objekt wird über den Tag-"intro" bestimmt.
     canvasTextfeld.delete("intro")
+    #Mit der Methode .destroy() wird das Tkinter Element button1 gelöscht.
     button1.destroy()
+    #Mit der Methode .after() wird eine Aktion zeitlich versetzt ausgeführt. Anders als die Python interne Funktion sleep,
+    # wird der Main-Thread nicht pausiert, sondern nur ein Timer bis zur Ausführung der Aktion gesetzt.
     spielfeld.after(100, menu())
 
+#Funktion für die Darstellung des Kampf-Menüs
 def menu():
     global menuButton1, menuButton2, menuButton3, spielfeld, selectionMarker, selection, menuListMoves, menuListSpecial
 
     #Erstellen von 5 verschiedenen Knöpfen:
-    #2 Menü-Knöpfe werden zur Dartellung und zum umschalten der unterschiedlichen Menüs benutzt.
-    #3 Actions-Knöpfe werden zum ausführen der Kampsactionen benutzt
+    #2 Listen-Knöpfe werden zur Dartellung und zum Umschalten der unterschiedlichen Menüs benutzt.
+    #3 Actions-Knöpfe werden zum ausführen der Kampfactionen verwendet
+    # Für die Zuweisung der commands innerhalb der Buttons, wird die anonyme Funktion Lambda verwendet, da eine Funktion innerhalb eines Commands
+    # nicht mit Übergabeparameter ausgeführt werden kann
     menuListMoves = Button(spielfeld, text="Moves", bg="#fff", highlightthickness=0, bd=0, fg="#555", font=("Press Start 2P", 30), command = lambda: changeMenu("menu"))
     canvasTextfeld.create_window(10, 0, window=menuListMoves, anchor=NW)
     menuListSpecial = Button(spielfeld, text="Spezial", bg="#fff",highlightthickness=0, bd=0, fg="#555", font=("Press Start 2P", 30), command = lambda: changeMenu("spezial"))
     canvasTextfeld.create_window(280, 0, window=menuListSpecial, anchor=NW)
-    menuButton1 = Button(spielfeld, text="Power Nap", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20),command = lambda: spielfeldGraphik(1,0.8))
+    menuButton1 = Button(spielfeld, text="Power Nap", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20), command = lambda: action(1))
     canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W)
-    menuButton2 = Button(spielfeld, text="Energy Booster", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20), command = lambda: spielfeldGraphik(0.8,0.8))
+    menuButton2 = Button(spielfeld, text="Energy Booster", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20), command = lambda: action(2))
     canvasTextfeld.create_window(100, 170, window=menuButton2, anchor=W)
     menuButton3 = Button(spielfeld, text="Kaffee Booster", bg="#fff",highlightthickness=0, bd=0, fg="#555", anchor=W, font=("Press Start 2P", 20), command = lambda: action(3))
     canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W)
 
-def changeMenu(changemenuspezial):
+def changeMenu(changemenulist):
     global selection
 
-    #Abfrage welcher Parameter
-    if changemenuspezial =="menu":
+    #if-Abfrage ob der Inhalt des Übergabeparameters "menu" oder "spezial" ist
+    if changemenulist =="menu":
+        #selection Variable wird je nach Menüauswahl verändert. Wird später für die Actionsauswahl verwendet
         if selection == 1:
             selection -= 0
-        menuButton1.configure(text="Power Nap")
-        menuButton2.configure(text="Energy Booster")
-        menuButton3.configure(text="Kaffee Booster")
+        menuButton1.configure(text="Power Nap", command = lambda: action(1))
+        menuButton2.configure(text="Energy Booster", command = lambda: action(2))
+        menuButton3.configure(text="Kaffee Booster", command = lambda: action(3))
 
-    elif changemenuspezial =="spezial":
-        if selection == 1:
+    elif changemenulist =="spezial":
+        if selection == 0:
             selection +=1
-        menuButton1.configure(text="Gruppenarbeit")
-        menuButton2.configure(text="Nachtschicht")
-        menuButton3.configure(text="Keine Idee mehr")
+        menuButton1.configure(text="Gruppenarbeit", command = lambda: action(4))
+        menuButton2.configure(text="Nachtschicht", command = lambda: action(5))
+        menuButton3.configure(text="Keine Idee mehr", command = lambda: action(6))
 
 def action():
     print("ich tue gar nichts")
@@ -120,8 +131,6 @@ spielfeld.configure(bg="#555")
 selection = 0
 # durchlauf - wird für die Überprüfung verwendet, ob die grafische Darstellung der erste Durchlauf ist
 durchlauf = 1
-
-nameSpieler = "GRUPPE"
 
 #setup-Funktion wird ausgeführt
 setup()
