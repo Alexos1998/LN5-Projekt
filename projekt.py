@@ -1,11 +1,7 @@
-import random
-import time
 from tkinter import *
-from tkinter.font import Font
-
 
 def setup():
-    global canvasSpielfeld, canvasTextfeld, playerFigurAnzeige, playerFigur, projectFigurAnzeige, projectFigur, balken
+    global canvasSpielfeld, canvasTextfeld, playerFigurAnzeige, playerFigur, projectFigurAnzeige, projectFigur, whiteBackground
 
     canvasSpielfeld = Canvas(spielfeld, height=500, width=800)
     canvasSpielfeld.configure(bg="#fff")
@@ -16,12 +12,16 @@ def setup():
     canvasTextfeld.configure(bg="#fff")
     canvasTextfeld.pack()
 
+
+    whiteBackground = PhotoImage(file="Assets/Images/White.png")
+    whiteBackgroundPlayer = canvasSpielfeld.create_image(20, 330, anchor=W,image=whiteBackground, tag="whitePl")
+    whiteBackgroundProject = canvasSpielfeld.create_image(780, 150, anchor=E,image=whiteBackground, tag="whitePr")
+
     playerFigur = PhotoImage(file="Assets/Images/Gruppe.png")
     playerFigurAnzeige = canvasSpielfeld.create_image(800, 330, anchor=W, image=playerFigur)
 
     projectFigur = PhotoImage(file="Assets/Images/coronavirus.png")
     projectFigurAnzeige = canvasSpielfeld.create_image(0, 150, anchor=E, image=projectFigur)
-
 
     figurenMove(800, 0)
 
@@ -47,10 +47,10 @@ def figurenMove(frames, durchlaeufe):
 
 
 def spielfeldGraphik():
-    global currentKP, playerArrow, namePlayer, projectArrow, healthbarProjectWhite, healthbarProjectColor, healthbarPlayerWhite, healthbarPlayerColor, currentHealthBarPlayer
+    global currentKP, playerArrow, projectArrow, healthbarProjectWhite, healthbarProjectColor, healthbarPlayerWhite, healthbarPlayerColor, currentHealthBarPlayer
 
     playerName = canvasSpielfeld.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18))
-    projectName = canvasSpielfeld.create_text(500, 370, text=namePlayer, anchor=SW, font=("Press Start 2P", 18))
+    projectName = canvasSpielfeld.create_text(500, 370, text="Gruppe", anchor=SW, font=("Press Start 2P", 18))
 
     playerArrow = PhotoImage(file="Assets/Images/arrowSpieler.png")
     playerHealthBarArrow = canvasSpielfeld.create_image(410, 410, anchor=W, image=playerArrow)
@@ -140,6 +140,7 @@ def menuNavigation():
     spielfeld.bind("<KeyPress-Right>", lambda b: menuHighlight(b))
     spielfeld.bind("<KeyPress-Left>", lambda b: menuHighlight(b))
 
+
 def menuHighlight(keystroke):
     global menuSelectionUpDown, menuSelectionLeftRight, selection
 
@@ -165,8 +166,6 @@ def menuHighlight(keystroke):
         menuButton2.configure(text="Nachtschicht")
         menuButton3.configure(text="Keine Idee mehr")
 
-    selection = PhotoImage(file="Assets/Images/selection.png")
-
     if keystroke.keysym == "Down":
         if menuSelectionUpDown < 3:
             menuSelectionUpDown += 1
@@ -174,13 +173,15 @@ def menuHighlight(keystroke):
         if menuSelectionUpDown > 1:
             menuSelectionUpDown -= 1
 
+    selection = PhotoImage(file="Assets/Images/selection.png")
+
     if menuSelectionUpDown == 1:
         selectionMarker = canvasTextfeld.create_image(95, 97, anchor=E, image=selection)
         menuButton1.configure(fg="black", font=("Press Start 2P", 25))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.66,0.66))
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.8,1))
         else:
             spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.8,0.5))
     elif menuSelectionUpDown == 2:
@@ -189,7 +190,7 @@ def menuHighlight(keystroke):
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.33,0.33))
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.8,0.8))
         else:
             spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.5,0.5))
     elif menuSelectionUpDown == 3:
@@ -207,21 +208,49 @@ def menuHighlight(keystroke):
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         spielfeld.unbind("<KeyPress-Return>")
 
+
 def healthDiffCalc(player, project):
-    global healthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer, changeLifeColor, balken
+    global healthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer, newHealthPlayer, newHealthProject
 
     if player < currentLifePlayer:
+        dmgAnimationPlayer(1)
+        newHealthPlayer = player
         healthDiffPlayer = int(round(currentLifePlayer - player, 2) * 100)
-        healthBarReductionPlayer(1, healthDiffPlayer)
-        currentLifePlayer = player
+        canvasSpielfeld.after(500, lambda: healthBarReductionPlayer(1, healthDiffPlayer))
 
     if project < currentLifeProject:
+        newHealthProject = project
+        dmgAnimationProject(1)
         healthDiffProject = int(round(currentLifeProject - project, 2) * 100)
-        healthBarReductionProject(1, healthDiffProject)
-        currentLifeProject = project
+        canvasSpielfeld.after(500, lambda: healthBarReductionProject(1, healthDiffProject))
+
+
+def dmgAnimationPlayer(durchlaeufe):
+
+    raiseWhite = lambda: canvasSpielfeld.tag_raise("whitePl")
+    canvasSpielfeld.after(durchlaeufe * 70, raiseWhite)
+    lowerWhite = lambda: canvasSpielfeld.tag_lower("whitePl")
+    canvasSpielfeld.after(durchlaeufe * 100, lowerWhite)
+
+    if durchlaeufe < 5:
+        durchlaeufe += 1
+        dmgAnimationPlayer(durchlaeufe)
+
+
+def dmgAnimationProject(durchlaeufe):
+
+    raiseWhite = lambda: canvasSpielfeld.tag_raise("whitePr")
+    canvasSpielfeld.after(durchlaeufe * 70, raiseWhite)
+    lowerWhite = lambda: canvasSpielfeld.tag_lower("whitePr")
+    canvasSpielfeld.after(durchlaeufe * 100, lowerWhite)
+
+    if durchlaeufe < 5:
+        durchlaeufe += 1
+        dmgAnimationProject(durchlaeufe)
+
 
 def healthBarReductionPlayer(durchlaeufe, healthDiff):
-    global currentLifePlayer, healthbarPlayerColor
+    global currentLifePlayer, newHealthPlayer
 
     currentHealthBarPlayer = currentLifePlayer * 200 + 500
 
@@ -240,10 +269,12 @@ def healthBarReductionPlayer(durchlaeufe, healthDiff):
     if durchlaeufe < healthDiff:
         durchlaeufe += 1
         healthBarReductionPlayer(durchlaeufe, healthDiff)
-
+    else:
+        currentLifePlayer = newHealthPlayer
 
 
 def healthBarReductionProject(durchlaeufe, healthDiff):
+    global currentLifeProject, newHealthProject
 
     currentHealthBarProject = currentLifeProject * 200 + 123
     currentKPIndex = currentLifeProject * 100 - durchlaeufe
@@ -257,10 +288,8 @@ def healthBarReductionProject(durchlaeufe, healthDiff):
     if durchlaeufe < healthDiff:
         durchlaeufe += 1
         healthBarReductionProject(durchlaeufe, healthDiff)
-
-
-def healthDiffCalc2():
-    print("test")
+    else:
+        currentLifeProject = newHealthProject
 
 
 # Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt
@@ -273,8 +302,6 @@ menuSelectionUpDown = 0
 menuSelectionLeftRight = 0
 currentLifeProject = 1
 currentLifePlayer = 1
-
-namePlayer = "Gruppe" #input("Bitte gib deinen Namen ein: ").upper()
 
 setup()
 
