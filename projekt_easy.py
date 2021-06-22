@@ -22,7 +22,7 @@ def setup():
     projektFigurAnzeige = canvasSpielfeld.create_image(780, 150, anchor=E, image=projektFigur)
 
     # Erstellen des Intro-Texts. Hier wird mit tags="intro" eine Art Anker gesetzt, über den das Objekt vom Modul aufgerufen werden kann
-    introText = canvasTextfeld.create_text(10,5, width=750, anchor=NW, text="Ein wildes PROJEKT ist aufgetaucht!", font=("Press Start 2P", 35), tags="intro")
+    canvasTextfeld.create_text(10,5, width=750, anchor=NW, text="Ein wildes PROJEKT ist aufgetaucht!", font=("Press Start 2P", 35), tags="intro")
 
     # Erstellen eine Buttons zum laden der Funktion ersteRunde()
     button1 = Button(spielfeld, text="Auf gehts",highlightthickness=0, bd=0, bg="#fff",fg="#555",command=lambda: ersteRunde())
@@ -30,7 +30,7 @@ def setup():
 
     spielfeldGraphik(1,1)
 
-def spielfeldGraphik(spieler,projekt):
+def spielfeldGraphik(spieler,project):
     global durchlauf
 
     # Darstellung der Namen auf dem Spielfeld. Der Name des Spielers wird basierend auf der Eingabe am Anfang definiert
@@ -39,7 +39,7 @@ def spielfeldGraphik(spieler,projekt):
 
     # Prozentuale Leben des Spielers und des Projekts werden umgerechnet um als x-Koordinate für die darstellung der
     # Lebensbalken
-    currentHealthProjektXCoord = 200 * projekt + 123
+    currentHealthProjektXCoord = 200 * project + 123
     currentHealthSpielerXCoord = 200 * spieler + 500
 
     # Erstellen der beiden Lebensbalken für das Projekt. Größe wird durch die Koordinaten der
@@ -66,13 +66,12 @@ def spielfeldGraphik(spieler,projekt):
 
 #Funktion zum Laden der ersten Runde
 def ersteRunde():
-    global canvasTextfeld, delayFrage
 
     #Mit der Methode .delete wird ein Objekt auf dem Canvas gelöscht. Das zu löschende Objekt wird über den Tag-"intro" bestimmt.
     canvasTextfeld.delete("intro")
     #Mit der Methode .destroy() wird das Tkinter Element button1 gelöscht.
     button1.destroy()
-    #Mit der Methode .after() wird eine Aktion zeitlich versetzt ausgeführt. Anders als die Python interne Funktion sleep,
+    # Mit der Methode .after() wird eine Aktion zeitlich versetzt ausgeführt. Anders als die Python interne Funktion sleep,
     # wird der Main-Thread nicht pausiert, sondern nur ein Timer bis zur Ausführung der Aktion gesetzt.
     spielfeld.after(100, menu())
 
@@ -102,15 +101,11 @@ def changeMenu(changemenulist):
     #if-Abfrage ob der Inhalt des Übergabeparameters "menu" oder "spezial" ist
     if changemenulist =="menu":
         #selection Variable wird je nach Menüauswahl verändert. Wird später für die Actionsauswahl verwendet
-        if selection == 1:
-            selection -= 0
         menuButton1.configure(text="Power Nap", command = lambda: action(1))
         menuButton2.configure(text="Energy Booster", command = lambda: action(2))
         menuButton3.configure(text="Kaffee Booster", command = lambda: action(3))
 
     elif changemenulist =="spezial":
-        if selection == 0:
-            selection +=1
         menuButton1.configure(text="Gruppenarbeit", command = lambda: action(4))
         menuButton2.configure(text="Nachtschicht", command = lambda: action(5))
         menuButton3.configure(text="Keine Idee mehr", command = lambda: action(6))

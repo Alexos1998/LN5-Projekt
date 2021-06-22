@@ -1,4 +1,51 @@
 from tkinter import *
+import random
+
+
+def introWindow():
+    global canvasIntro
+    canvasIntro = Canvas(spielfeld,width= 800, height= 800)
+    canvasIntro.configure(bg="#fff")
+    canvasIntro.pack()
+
+    introText(1)
+
+def introText(round):
+    # global canvasTextfeld, canvasSpielfeld
+
+    canvasIntro.delete("intro")
+
+    introText = canvasIntro.create_text(400, 500, width=780, anchor=N, text="", font=("Press Start 2P", 17), tags="intro")
+    if round == 1:
+        intro = "Vor sehr langer Zeit… sehr sehr langer Zeit… mindestens drei Wochen her… beginnt unsere Geschichte. "
+    if round == 2:
+        intro = "Es war ein normaler Tag an einer normalen Schule an einem alles als normalen Jahr. Die Schmorona-Pandemie änderte alles."
+    if round == 3:
+        intro = 'Ok vielleicht nicht so drastisch. Aber Klausuren fanden nicht statt und Lehrer forderten "Ersatzleistungen". Und darüber handelt auch unsere Geschichte. Doch warum seht ihr nicht einfach selbst!'
+    if round == 4:
+        intro = "Schaut wie naiv und unschuldig noch alle sind! Das wird sich sogleich ändern."
+    if round == 5:
+        intro = "So liebe Klasse! Ich habe mir etwas überlegt. Da wir aufgrund der Schmorona-Pandemie leider keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht’s!"
+    
+
+    for x in range(len(intro)+1):
+        delay = 40 * x
+        text = intro[:x]
+        textUpdate = lambda text=text: canvasIntro.itemconfigure(introText, text=text)
+        canvasIntro.after(delay, textUpdate)
+    round += 1
+    spielfeld.after(delay + 200, lambda: buttonNextIntro(round))
+
+
+def buttonNextIntro(round):
+    global button1
+
+    button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555", anchor=S,
+                     font=("Press Start 2P", 15))
+    canvasIntro.create_window(400, 780, window=button1)
+    spielfeld.bind("<KeyPress-Return>", lambda b: introText(round))
+
+
 
 def setup():
     global canvasSpielfeld, canvasTextfeld, playerFigurAnzeige, playerFigur, projectFigurAnzeige, projectFigur, whiteBackground
@@ -27,7 +74,7 @@ def setup():
 
 
 def figurenMove(frames, durchlaeufe):
-    global playerFigurAnzeige, projectFigurAnzeige, currentKP, balken
+    global playerFigurAnzeige, projectFigurAnzeige
 
     moveplayerFigur = lambda: canvasSpielfeld.move(playerFigurAnzeige, -5, 0)
     canvasSpielfeld.after(durchlaeufe * 10, moveplayerFigur)
@@ -38,7 +85,7 @@ def figurenMove(frames, durchlaeufe):
     frames -= 5
 
     if frames == 20:
-        canvasSpielfeld.after(1700, lambda: intro())
+        canvasSpielfeld.after(1700, lambda: introFight())
         canvasSpielfeld.after(1700, lambda: spielfeldGraphik())
 
     else:
@@ -47,7 +94,7 @@ def figurenMove(frames, durchlaeufe):
 
 
 def spielfeldGraphik():
-    global currentKPIndex, playerArrow, projectArrow, healthbarProjectWhite, healthbarProjectColor, healthbarPlayerWhite, healthbarPlayerColor, currentHealthBarPlayer
+    global currentKPIndex, playerArrow, projectArrow
 
     playerName = canvasSpielfeld.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18))
     projectName = canvasSpielfeld.create_text(500, 370, text="Gruppe", anchor=SW, font=("Press Start 2P", 18))
@@ -70,8 +117,8 @@ def spielfeldGraphik():
     currentKPIndex = canvasSpielfeld.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18))
 
 
-def intro():
-    global introText, canvasTextfeld, canvasSpielfeld
+def introFight():
+    global canvasTextfeld, canvasSpielfeld
 
     introText = canvasTextfeld.create_text(400, 10, width=750, anchor=N, text="", font=("Press Start 2P", 35))
     intro1 = "Ein wildes PROJEKT ist aufgetaucht! "
@@ -308,6 +355,6 @@ menuSelectionLeftRight = 0
 currentLifeProject = 1
 currentLifePlayer = 1
 
-setup()
+introWindow()
 
 spielfeld.mainloop()
