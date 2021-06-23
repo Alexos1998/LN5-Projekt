@@ -64,8 +64,8 @@ def spielfeldGraphik():
     healthbarPlayerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white")
     healthbarPlayerColor = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="green")
 
-    kraftpunkte = canvasSpielfeld.create_text(100, 112, text="KP:", font=("Press Start 2P", 15), tags="KP")
-    kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
+    kpPlayer = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
+    kpProject = canvasSpielfeld.create_text(100, 112, text="KP:", font=("Press Start 2P", 15), tags="KP")
 
     currentKPIndex = canvasSpielfeld.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18))
 

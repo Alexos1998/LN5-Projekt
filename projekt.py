@@ -64,7 +64,7 @@ def setup():
 
     canvasSpielfeld.delete("all")
     canvasTextfeld.delete("all")
-
+    spielfeld.unbind("<KeyPress-Return>")
 
     whiteBackground = PhotoImage(file="Assets/Images/White.png")
     whiteBackgroundPlayer = canvasSpielfeld.create_image(20, 330, anchor=W,image=whiteBackground, tag="whitePl")
@@ -100,27 +100,27 @@ def figurenMove(frames, durchlaeufe):
 
 
 def spielfeldGraphik():
-    global currentKPIndex, playerArrow, projectArrow, healthbarPlayerColor, healthbarProjectColor
+    global currentKPIndex, playerArrow, projectArrow, healthbarPlayerColor, healthbarProjectColor, healthbarProjectWhite
 
-    playerName = canvasSpielfeld.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18))
-    projectName = canvasSpielfeld.create_text(500, 370, text="Gruppe", anchor=SW, font=("Press Start 2P", 18))
+    playerName = canvasSpielfeld.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18), tags="project")
+    projectName = canvasSpielfeld.create_text(500, 370, text="Gruppe", anchor=SW, font=("Press Start 2P", 18), tags="player")
 
     playerArrow = PhotoImage(file="Assets/Images/arrowSpieler.png")
-    playerHealthBarArrow = canvasSpielfeld.create_image(410, 410, anchor=W, image=playerArrow)
+    playerHealthBarArrow = canvasSpielfeld.create_image(410, 410, anchor=W, image=playerArrow, tags="player")
 
     projectArrow = PhotoImage(file="Assets/Images/arrowProjekt.png")
-    projectHealthBarArrow = canvasSpielfeld.create_image(45, 120, anchor=W, image=projectArrow)
+    projectHealthBarArrow = canvasSpielfeld.create_image(45, 120, anchor=W, image=projectArrow, tags="project")
 
-    healthbarProjectWhite = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="white")
-    healthbarProjectColor = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="green")
+    healthbarProjectWhite = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="white", tags="project")
+    healthbarProjectColor = canvasSpielfeld.create_rectangle(123, 100, 323, 120, fill="green", tags="project")
 
-    healthbarPlayerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white")
-    healthbarPlayerColor = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="green")
+    healthbarPlayerWhite = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="white", tags="player")
+    healthbarPlayerColor = canvasSpielfeld.create_rectangle(700, 400, 500, 380, fill="green", tags="player")
 
-    kraftpunkte = canvasSpielfeld.create_text(100, 112, text="KP:", font=("Press Start 2P", 15), tags="KP")
-    kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="KP")
+    kraftpunkte = canvasSpielfeld.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="player")
+    kraftpunkte = canvasSpielfeld.create_text(100, 112, text="KP:", font=("Press Start 2P", 15), tags="project")
 
-    currentKPIndex = canvasSpielfeld.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18))
+    currentKPIndex = canvasSpielfeld.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18), tags="player")
 
 
 def introFight():
@@ -160,28 +160,28 @@ def menu():
     menuListMoves = Button(spielfeld, text="Moves", bg="#fff",
                            highlightthickness=0, bd=0, fg="#000",
                            font=("Press Start 2P", 30))
-    canvasTextfeld.create_window(10, 0, window=menuListMoves, anchor=NW)
+    canvasTextfeld.create_window(10, 0, window=menuListMoves, anchor=NW, tags="menu")
 
     menuListSpecial = Button(spielfeld, text="Spezial", bg="#fff",
                              highlightthickness=0, bd=0, fg="#555",
                              font=("Press Start 2P", 30))
-    canvasTextfeld.create_window(280, 0, window=menuListSpecial, anchor=NW)
+    canvasTextfeld.create_window(280, 0, window=menuListSpecial, anchor=NW, tags="menu")
 
     menuButton1 = Button(spielfeld, text="Power Nap", bg="#fff",
                          highlightthickness=0, bd=0, fg="#555", anchor=W,
                          font=("Press Start 2P", 20))
-    canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W)
+    canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W, tags="menu")
 
     menuButton2 = Button(spielfeld, text="Energy Booster", bg="#fff",
                          highlightthickness=0, bd=0, fg="#555", anchor=W,
                          font=("Press Start 2P", 20))
-    canvasTextfeld.create_window(100, 170, window=menuButton2, anchor=W)
+    canvasTextfeld.create_window(100, 170, window=menuButton2, anchor=W, tags="menu")
 
     menuButton3 = Button(spielfeld,
                          text="Kaffee Booster", bg="#fff",
                          highlightthickness=0, bd=0, fg="#555", anchor=W,
                          font=("Press Start 2P", 20))
-    canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W)
+    canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W, tags="menu")
 
     menuNavigation()
 
@@ -229,25 +229,25 @@ def menuHighlight(keystroke):
     selection = PhotoImage(file="Assets/Images/selection.png")
 
     if menuSelectionUpDown == 1:
-        selectionMarker = canvasTextfeld.create_image(95, 97, anchor=E, image=selection)
+        selectionMarker = canvasTextfeld.create_image(95, 97, anchor=E, image=selection, tags="menu")
         menuButton1.configure(fg="black", font=("Press Start 2P", 25))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: action1())
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,1))
         else:
             spielfeld.bind("<KeyPress-Return>", lambda b: action4())
     elif menuSelectionUpDown == 2:
-        selectionMarker = canvasTextfeld.create_image(95, 167, anchor=E, image=selection)
+        selectionMarker = canvasTextfeld.create_image(95, 167, anchor=E, image=selection, tags="menu")
         menuButton2.configure(fg="black", font=("Press Start 2P", 25))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: action2())
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(1,0))
         else:
             spielfeld.bind("<KeyPress-Return>", lambda b: action5())
     elif menuSelectionUpDown == 3:
-        selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection)
+        selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection,tags="menu")
         menuButton3.configure(fg="black", font=("Press Start 2P", 25))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
@@ -260,6 +260,8 @@ def menuHighlight(keystroke):
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         spielfeld.unbind("<KeyPress-Return>")
+
+
 
 
 def healthDiffCalc(player, project):
@@ -287,7 +289,6 @@ def dmgAnimationPlayer(durchlaeufe):
     if durchlaeufe < 5:
         durchlaeufe += 1
         dmgAnimationPlayer(durchlaeufe)
-
 
 def dmgAnimationProject(durchlaeufe):
 
@@ -324,7 +325,7 @@ def healthBarReductionPlayer(durchlaeufe, healthReduction):
         currentLifePlayer -= dmgPlayer
     else:
         currentLifePlayer = 0
-        spielEnde("verloren")
+        canvasSpielfeld.after(durchlaeufe * 40, lambda: spielEnde("verloren"))
 
 def healthBarReductionProject(durchlaeufe, healthReduction):
     global currentLifeProject
@@ -346,12 +347,100 @@ def healthBarReductionProject(durchlaeufe, healthReduction):
         currentLifeProject -= dmgProject
     else:
         currentLifeProject = 0
-        spielEnde("gewonnen")
+        canvasSpielfeld.after(durchlaeufe * 40, lambda: spielEnde("gewonnen"))
 
 def spielEnde(ende):
+
+    spielfeld.unbind("<KeyPress-Down>")
+    spielfeld.unbind("<KeyPress-Up>")
+    spielfeld.unbind("<KeyPress-Right>")
+    spielfeld.unbind("<KeyPress-Left>")
+    spielfeld.bind("<KeyPress-Return>", lambda b: test())
+
     if ende == "gewonnen":
-        canvasSpielfeld.delete("all")
-        canvasTextfeld.delete("all")
+        canvasSpielfeld.after(500, lambda: animationGewonnen(1, 300))
+        canvasSpielfeld.after(1200, lambda: textfightEnde(ende))
+    else:
+        canvasSpielfeld.after(1000, lambda: animationVerloren(1, 350))
+        canvasSpielfeld.after(1200, lambda: textfightEnde(ende))
+
+def animationGewonnen(durchlaeufe, frames):
+
+    canvasSpielfeld.delete("project")
+    moveprojectFigur = lambda: canvasSpielfeld.move(projectFigurAnzeige, 0,-5)
+    canvasSpielfeld.after(durchlaeufe * 10, moveprojectFigur)
+
+    if frames > 0:
+        durchlaeufe += 1
+        animationGewonnen(durchlaeufe, frames - 5)
+
+def textfightEnde(ende):
+
+    canvasTextfeld.delete("menu")
+    spielfeld.bind("<KeyPress-Return>", lambda b: outro())
+
+    fightEnd = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 30))
+    if ende == "gewonnen":
+        fightEndText = "Das Projekt wurde besiegt!"
+    else:
+        fightEndText = "Die Gruppe wurde besiegt!"
+
+
+    for x in range(len(fightEndText)+1):
+        delay = 40 * x
+        text = fightEndText[:x]
+        textUpdate = lambda text=text: canvasTextfeld.itemconfigure(fightEnd, text=text)
+        canvasSpielfeld.after(delay, textUpdate)
+
+    button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555", anchor=S,
+                     font=("Press Start 2P", 20))
+    canvasTextfeld.create_window(400, 275, window=button1)
+
+
+def animationVerloren(durchlaeufe, frames):
+
+    canvasSpielfeld.delete("player")
+    moveplayerFigur = lambda: canvasSpielfeld.move(playerFigurAnzeige, 0, +5)
+    canvasSpielfeld.after(durchlaeufe * 10, moveplayerFigur)
+
+    if frames > 0:
+        durchlaeufe += 1
+        animationVerloren(durchlaeufe, frames - 5)
+
+def outro():
+    global currentLifePlayer, picture
+
+    canvasSpielfeld.delete("all")
+    canvasTextfeld.delete("all")
+
+    outroText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17))
+
+    if  currentLifePlayer > 0.8:
+        picture = PhotoImage(file="Assets/Images/001_Sternenhimmel.png")
+        outro = "War es ein Wunder? War es pures Können? Das alles spielte keine Rolle. Den Helden war es gelungen, was bis jetzt noch niemandem gelungen war. Sie hatten eine 1 für ihr Projekt bekommen. Der erste Schritt in eine steile Karriere."
+    elif currentLifePlayer > 0.6:
+        picture = PhotoImage(file="Assets/Images/002_Schule.png")
+        outro = "Ach eine 2. Die vielleicht beste Note. Viele würden jetzt protestieren und sagen: Momentmal eine 1 ist doch viel besser. Doch ist sie das? Also faktisch ist sie natürlich besser! Aber wer will schon der Streber sein, der für eine Zahl so ackert. Nein die zwei ist perfekt!"
+    elif currentLifePlayer > 0.4:
+        picture = PhotoImage(file="Assets/Images/003_Schule_Apokalypse.png")
+        outro = 'Die drei. Im anderen Kontext ist befriedigend das Ziel. Hier ist es zumindest keine Schande.'
+    elif currentLifePlayer > 0.2:
+        picture = PhotoImage(file="Assets/Images/coronavirus.png")
+        outro = "Knapp getroffen gilt auch noch. Mit der Vier hat man es zwar gerade noch so geschafft, aber solange die Note hinter einem Kaffeefleck auf dem Zeugnis verschwindet passt das schon."
+    elif currentLifePlayer > 0:
+        picture = PhotoImage(file="Assets/Images/Gruppe.png")
+        outro = "Uh die 5. Das tut weh! Sich zu schämen ist hier wohl angebracht. Der einzige Wehrmutstropfen ist: Es geht noch schlimmer."
+    else:
+        picture = PhotoImage(file="Assets/Images/Gruppe.png")
+        outro ="Da könnte man ja glatt meinen die Helden hätten es gar nicht versucht. Wobei Helden in diesem Fall wohl nicht mehr angebracht ist. Nennen wir sie einfach Personen. Ja die Personen haben ins Klo gegriffen!"
+
+    canvasSpielfeld.create_image(400, 250, anchor= CENTER, image=picture)
+
+    for x in range(len(outro)+1):
+        delay = 40 * x
+        text = outro[:x]
+        textUpdate = lambda text=text: canvasTextfeld.itemconfigure(outroText, text=text)
+        canvasTextfeld.after(delay, textUpdate)
 
 # Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt
 spielfeld = Tk()
