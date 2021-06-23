@@ -2,39 +2,50 @@ from tkinter import *
 import random
 
 
-def introWindow():
-    global canvasIntro
-    canvasIntro = Canvas(spielfeld,width= 800, height= 800)
-    canvasIntro.configure(bg="#fff")
-    canvasIntro.pack()
+def setupWindow():
+    global canvasSpielfeld, canvasTextfeld
+    canvasSpielfeld = Canvas(spielfeld, height=500, width=800)
+    canvasSpielfeld.configure(bg="#fff")
+    canvasSpielfeld.pack()
 
-    introText(1)
+    canvasTextfeld = Canvas(spielfeld, height=300, width=800)
+    canvasTextfeld.configure(bg="#fff")
+    canvasTextfeld.pack()
 
-def introText(round):
-    # global canvasTextfeld, canvasSpielfeld
+    introStory(1)
 
-    canvasIntro.delete("intro")
+def introStory(round):
+    global picture
 
-    introText = canvasIntro.create_text(400, 500, width=780, anchor=N, text="", font=("Press Start 2P", 17), tags="intro")
+    canvasTextfeld.delete("intro")
+
+    introText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17), tags="intro")
+
     if round == 1:
+        picture = PhotoImage(file="Assets/Images/001_Sternenhimmel.png")
         intro = "Vor sehr langer Zeit… sehr sehr langer Zeit… mindestens drei Wochen her… beginnt unsere Geschichte. "
     if round == 2:
-        intro = "Es war ein normaler Tag an einer normalen Schule an einem alles als normalen Jahr. Die Schmorona-Pandemie änderte alles."
+        picture = PhotoImage(file="Assets/Images/002_Schule.png")
+        intro = "Es war ein normaler Tag, an einer normalen Schule, in einem alles andere als normalen Jahr. Doch die Schmorona-Pandemie änderte alles."
     if round == 3:
+        picture = PhotoImage(file="Assets/Images/003_Schule_Apokalypse.png")
         intro = 'Ok vielleicht nicht so drastisch. Aber Klausuren fanden nicht statt und Lehrer forderten "Ersatzleistungen". Und darüber handelt auch unsere Geschichte. Doch warum seht ihr nicht einfach selbst!'
     if round == 4:
+        picture = PhotoImage(file="Assets/Images/coronavirus.png")
         intro = "Schaut wie naiv und unschuldig noch alle sind! Das wird sich sogleich ändern."
     if round == 5:
-        intro = "So liebe Klasse! Ich habe mir etwas überlegt. Da wir aufgrund der Schmorona-Pandemie leider keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht’s!"
+        picture = PhotoImage(file="Assets/Images/Gruppe.png")
+        intro = "So liebe Klasse! Da wir aufgrund der Schmorona-Pandemie keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht's!"
     
+    canvasSpielfeld.create_image(400, 250, anchor= CENTER, image=picture)
 
     for x in range(len(intro)+1):
         delay = 40 * x
         text = intro[:x]
-        textUpdate = lambda text=text: canvasIntro.itemconfigure(introText, text=text)
-        canvasIntro.after(delay, textUpdate)
+        textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
+        canvasTextfeld.after(delay, textUpdate)
     round += 1
-    spielfeld.after(delay + 200, lambda: buttonNextIntro(round))
+    buttonNextIntro(round)
 
 
 def buttonNextIntro(round):
@@ -42,22 +53,17 @@ def buttonNextIntro(round):
 
     button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555", anchor=S,
                      font=("Press Start 2P", 15))
-    canvasIntro.create_window(400, 780, window=button1)
-    spielfeld.bind("<KeyPress-Return>", lambda b: introText(round))
-
+    canvasTextfeld.create_window(400, 280, window=button1)
+    spielfeld.bind("<KeyPress-Return>", lambda b: introStory(round))
+    if round == 6:
+        spielfeld.bind("<KeyPress-Return>", lambda b: setup())
 
 
 def setup():
-    global canvasSpielfeld, canvasTextfeld, playerFigurAnzeige, playerFigur, projectFigurAnzeige, projectFigur, whiteBackground
+    global playerFigurAnzeige, playerFigur, projectFigurAnzeige, projectFigur, whiteBackground
 
-    canvasSpielfeld = Canvas(spielfeld, height=500, width=800)
-    canvasSpielfeld.configure(bg="#fff")
-    canvasSpielfeld.pack()
-
-    # Erstellen des Canvas, zur Darstellung von Spieltext und Buttons
-    canvasTextfeld = Canvas(spielfeld, height=300, width=800)
-    canvasTextfeld.configure(bg="#fff")
-    canvasTextfeld.pack()
+    canvasSpielfeld.delete("all")
+    canvasTextfeld.delete("all")
 
 
     whiteBackground = PhotoImage(file="Assets/Images/White.png")
@@ -94,7 +100,7 @@ def figurenMove(frames, durchlaeufe):
 
 
 def spielfeldGraphik():
-    global currentKPIndex, playerArrow, projectArrow
+    global currentKPIndex, playerArrow, projectArrow, healthbarPlayerColor, healthbarProjectColor
 
     playerName = canvasSpielfeld.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18))
     projectName = canvasSpielfeld.create_text(500, 370, text="Gruppe", anchor=SW, font=("Press Start 2P", 18))
@@ -120,12 +126,12 @@ def spielfeldGraphik():
 def introFight():
     global canvasTextfeld, canvasSpielfeld
 
-    introText = canvasTextfeld.create_text(400, 10, width=750, anchor=N, text="", font=("Press Start 2P", 35))
-    intro1 = "Ein wildes PROJEKT ist aufgetaucht! "
-    for x in range(len(intro1)):
+    introFight = canvasTextfeld.create_text(400, 10, width=750, anchor=N, text="", font=("Press Start 2P", 35), tags="intro")
+    intro = "Ein wildes PROJEKT ist aufgetaucht! "
+    for x in range(len(intro)):
         delay = 40 * x
-        text = intro1[:x]
-        textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introText, text=text)
+        text = intro[:x]
+        textUpdate = lambda text=text: canvasTextfeld.itemconfigure(introFight, text=text)
         canvasTextfeld.after(delay, textUpdate)
 
     spielfeld.after(delay + 200, lambda: buttonErsteRunde())
@@ -135,7 +141,7 @@ def buttonErsteRunde():
     global button1
 
     button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555", anchor=S,
-                     font=("Press Start 2P", 23), command=lambda: ersteRunde())
+                     font=("Press Start 2P", 23))
     canvasTextfeld.create_window(400, 270, window=button1)
     spielfeld.bind("<KeyPress-Return>", lambda b: ersteRunde())
 
@@ -143,7 +149,7 @@ def buttonErsteRunde():
 def ersteRunde():
     global canvasTextfeld, button1, delayFrage
 
-    canvasTextfeld.delete(introText)
+    canvasTextfeld.delete("intro")
     button1.destroy()
     spielfeld.after(100, menu())
 
@@ -228,27 +234,27 @@ def menuHighlight(keystroke):
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.2,0))
+            spielfeld.bind("<KeyPress-Return>", lambda b: action1())
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.3,0))
+            spielfeld.bind("<KeyPress-Return>", lambda b: action4())
     elif menuSelectionUpDown == 2:
         selectionMarker = canvasTextfeld.create_image(95, 167, anchor=E, image=selection)
         menuButton2.configure(fg="black", font=("Press Start 2P", 25))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0.2))
+            spielfeld.bind("<KeyPress-Return>", lambda b: action2())
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0.3))
+            spielfeld.bind("<KeyPress-Return>", lambda b: action5())
     elif menuSelectionUpDown == 3:
         selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection)
         menuButton3.configure(fg="black", font=("Press Start 2P", 25))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0))
+            spielfeld.bind("<KeyPress-Return>", lambda b: action3())
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.5,0.5))
+            spielfeld.bind("<KeyPress-Return>", lambda b: action6())
     elif menuSelectionUpDown == 0:
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
@@ -299,8 +305,6 @@ def healthBarReductionPlayer(durchlaeufe, healthReduction):
     global currentLifePlayer
 
     currentKP = round(currentLifePlayer * 100 - durchlaeufe)
-    if currentKP < 0:
-        currentKP = 0
 
     reduceBalken = lambda: canvasSpielfeld.coords(healthbarPlayerColor, 500+ currentKP * 2, 400, 500, 380)
     canvasSpielfeld.after(durchlaeufe * 40, reduceBalken)
@@ -313,36 +317,41 @@ def healthBarReductionPlayer(durchlaeufe, healthReduction):
     changeColor = lambda: canvasSpielfeld.itemconfigure(healthbarPlayerColor, fill=healthColor)
     canvasSpielfeld.after(durchlaeufe * 40, changeColor)
 
-    if durchlaeufe < healthReduction:
+    if durchlaeufe < healthReduction and currentKP > 0:
         durchlaeufe += 1
         healthBarReductionPlayer(durchlaeufe, healthReduction)
-    else:
+    elif currentKP > 0:
         currentLifePlayer -= dmgPlayer
-
+    else:
+        currentLifePlayer = 0
+        spielEnde("verloren")
 
 def healthBarReductionProject(durchlaeufe, healthReduction):
     global currentLifeProject
 
-    #currentHealthBarProject = currentLifeProject * 200 + 123
-
     currentKP = round(currentLifeProject * 100 - durchlaeufe)
-    if currentKP < 0:
-        currentKP = 0
 
     reduceBalken = lambda: canvasSpielfeld.coords(healthbarProjectColor, 123, 100, 123 + currentKP * 2, 120)
     canvasSpielfeld.after(durchlaeufe * 40, reduceBalken)
 
     healthColor = "green" if currentKP >= 80 else "yellow" if currentKP < 80 and currentKP >= 50 else "orange" if currentKP < 50 and currentKP >= 20 else "red"
+
     changeColor = lambda: canvasSpielfeld.itemconfigure(healthbarProjectColor, fill=healthColor)
     canvasSpielfeld.after(durchlaeufe * 40, changeColor)
 
-    if durchlaeufe < healthReduction:
+    if durchlaeufe < healthReduction and currentKP > 0:
         durchlaeufe += 1
         healthBarReductionProject(durchlaeufe, healthReduction)
-    else:
-
+    elif currentKP > 0:
         currentLifeProject -= dmgProject
+    else:
+        currentLifeProject = 0
+        spielEnde("gewonnen")
 
+def spielEnde(ende):
+    if ende == "gewonnen":
+        canvasSpielfeld.delete("all")
+        canvasTextfeld.delete("all")
 
 # Erstellen des Tkinter Fensters. Hintergrund wird auf dunkel grau gesetzt
 spielfeld = Tk()
@@ -355,6 +364,6 @@ menuSelectionLeftRight = 0
 currentLifeProject = 1
 currentLifePlayer = 1
 
-introWindow()
+setupWindow()
 
 spielfeld.mainloop()
