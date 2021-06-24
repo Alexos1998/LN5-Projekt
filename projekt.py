@@ -29,11 +29,11 @@ def introStory(round):
         intro = "Es war ein normaler Tag, an einer normalen Schule, in einem alles andere als normalen Jahr. Doch die Schmorona-Pandemie änderte alles."
     if round == 3:
         picture = PhotoImage(file="Assets/Images/003_Schule_Apokalypse.png")
-        intro = 'Ok vielleicht nicht so drastisch. Aber Klausuren fanden nicht statt und Lehrer forderten "Ersatzleistungen". Und darüber handelt auch unsere Geschichte. Doch warum seht ihr nicht einfach selbst!'
+        intro = 'Ok... vielleicht nicht so drastisch. Aber Klausuren fanden nicht statt und Lehrer forderten "Ersatzleistungen". Und darüber handelt auch unsere Geschichte. Doch warum seht ihr nicht einfach selbst!'
     if round == 4:
         picture = PhotoImage(file="Assets/Images/coronavirus.png")
         intro = "Schaut wie naiv und unschuldig noch alle sind! Das wird sich sogleich ändern."
-    if round == 5:
+    if round == 4:
         picture = PhotoImage(file="Assets/Images/Gruppe.png")
         intro = "So liebe Klasse! Da wir aufgrund der Schmorona-Pandemie keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht's!"
     
@@ -55,7 +55,7 @@ def buttonNextIntro(round):
                      font=("Press Start 2P", 15))
     canvasTextfeld.create_window(400, 280, window=button1)
     spielfeld.bind("<KeyPress-Return>", lambda b: introStory(round))
-    if round == 6:
+    if round == 5:
         spielfeld.bind("<KeyPress-Return>", lambda b: setup())
 
 
@@ -236,7 +236,7 @@ def menuHighlight(keystroke):
         if menuSelectionLeftRight == 0:
             spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,1))
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: action4())
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0.5))
     elif menuSelectionUpDown == 2:
         selectionMarker = canvasTextfeld.create_image(95, 167, anchor=E, image=selection, tags="menu")
         menuButton2.configure(fg="black", font=("Press Start 2P", 25))
@@ -252,7 +252,7 @@ def menuHighlight(keystroke):
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: action3())
+            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.5,0))
         else:
             spielfeld.bind("<KeyPress-Return>", lambda b: action6())
     elif menuSelectionUpDown == 0:
@@ -355,7 +355,7 @@ def spielEnde(ende):
     spielfeld.unbind("<KeyPress-Up>")
     spielfeld.unbind("<KeyPress-Right>")
     spielfeld.unbind("<KeyPress-Left>")
-    spielfeld.bind("<KeyPress-Return>", lambda b: test())
+    spielfeld.unbind("<KeyPress-Return>")
 
     if ende == "gewonnen":
         canvasSpielfeld.after(500, lambda: animationGewonnen(1, 300))
@@ -412,6 +412,7 @@ def outro():
 
     canvasSpielfeld.delete("all")
     canvasTextfeld.delete("all")
+    spielfeld.unbind("<KeyPress-Return>")
 
     outroText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17))
 
