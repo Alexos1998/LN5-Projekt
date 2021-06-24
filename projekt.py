@@ -18,19 +18,19 @@ def setupWindow():
     canvasTextfeld.pack()
 
     # Der Funktion introStory wird mit 1 als Übergabeparameter aufgerufen. 
-    # Der Parameter zählt die Anzahl der Durchläufe der Funktion
+    # Der Parameter wird als Counter verwendet und zählt die Anzahl der Durchläufe der Funktion
     introStory(1)
 
 def introStory(round):
     # Die variable picture wird global gesetzt, da Bildelemente mit PhotoImage nur lokal geladen werden und der
-    # Tkinter - Mainloop die Dateien sonst nicht erkennt
-    global picture
+    # Tkinter.mainloop die Dateien sonst nicht erkennt
+    global picture, text
 
     # Mit .delete werden alle Elemente mit dem tag "intro" vom Canvas gelöscht. Dies ist eine Canvas eigene Methode
     canvasTextfeld.delete("intro")
 
     # Ein leerer String wird als Text im canvasTextfeld erstellt. Dem Textobjekt werden dabei die Position in x,y Koordinaten 
-    # mitgegeben, als auch die Breite und Ausrichtung.  
+    # mitgegeben. Ebenfalls werden die Breite (width), Ausrichtung (anchor) und Schriftart (font), sowie größe festgelegt.
     introText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17), tags="intro")
 
     # Basierend auf dem Parameter round wird ein Foto mit der Funktion PhotoImage geladen und ein Text wird der Variable
@@ -51,7 +51,7 @@ def introStory(round):
         picture = PhotoImage(file="Assets/Images/Gruppe.png")
         intro = "So liebe Klasse! Da wir aufgrund der Schmorona-Pandemie keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht's!"
     
-    # Das geladene Bild wird mit der Methode create_image geladen und zentriert dargestellt
+    # Das geladene Bild wird mit der Methode create_image dargestellt und zentriert ausgerichtet.
     canvasGrafiken.create_image(400, 250, anchor= CENTER, image=picture)
 
     # In einer Schleife wird dem leeren Text inkrementell der Inhalt von intro zugewiesen. Schleife wird n + 1 mal basierend auf der
@@ -63,8 +63,8 @@ def introStory(round):
         text = intro[:x]
         # Der Variable wird die anonyme Funktion lambda zugewiesen. lambda wird der Übergabeparameter "t" mitgegeben, 
         # welcher mit text gleichgesetzt wird (t=text:),
-        # nach dem ":", folgt dann der Inhalt der Funktion. Hier wird die Canvas-Methode .itemconfigure benutzt um den text des Canvas Objekts anzupassen
-        # Der Text ist dabei = dem Übergabeparameter "t"
+        # nach dem ":" folgt dann der Inhalt der Funktion. Hier wird die Canvas-Methode .itemconfigure benutzt um den text des Canvas Objekts anzupassen
+        # Der Text ist dabei = dem Übergabeparameter "t", also dem vorher definierten text
         textUpdate = lambda t=text: canvasTextfeld.itemconfigure(introText, text=t)
         # Mit der Methode .after wird textUpdate, nach der Zeit "delay" in ms verzögert ausgeführt
         canvasTextfeld.after(delay, textUpdate)
@@ -115,7 +115,7 @@ def figurenMove(coordinates, durchlaeufe):
     global playerFigurAnzeige, projectFigurAnzeige
 
     # Mit der Methode .move werden die Grafiken bei jedem Durchlauf um x,y Koordinaten verschoben.
-    # lambda verhindert, dass die Aktion direkt ausgeführt wird und später mit .after in einem delay aufgerufen
+    # lambda verhindert, dass die Aktion direkt ausgeführt wird und später mit .after mit einem delay aufgerufen
     # werden kann. 
     moveplayerFigur = lambda: canvasGrafiken.move(playerFigurAnzeige, -5, 0)
     canvasGrafiken.after(durchlaeufe * 10, moveplayerFigur)
@@ -187,11 +187,45 @@ def ersteRunde():
 
     canvasTextfeld.delete("intro")
     button1.destroy()
-    spielfeld.after(100, menu())
+    spielfeld.unbind("<KeyPress-Return>")
+
+    turnRandomText = canvasTextfeld.create_text(400, 30, width=800, anchor=N, text="", font=("Press Start 2P", 28))
+
+    textRandom = "abcdefghijklmnopqrstuvwxyz0123456789öäüABCDEFGHIJKLMOPQRSTUVWXYZ"
+    gruppeStart = "Die Gruppe fängt an "
+    projektStart = "Das Projekt fängt an"
+
+    randomizer = random.randint(0,1)
+    if randomizer == 0:
+        roundStart = gruppeStart
+        spielfeld.bind("<KeyPress-Return>", lambda b: menu())
+    else:
+        roundStart = projektStart
+        spielfeld.bind("<KeyPress-Return>", lambda b: projectAction())
+
+    index = 0
+    for x in range(36):
+
+        if x < 15:
+            delay = 90 * x
+            text = ''.join(random.sample(textRandom,19))
+        else:
+            delay = 500 + 60 * x
+            textEnd = ''.join(random.sample(textRandom,19))
+            text = roundStart[:index] + textEnd[index:]
+            index += 1
+        updateText = lambda t=text: canvasTextfeld.itemconfigure(turnRandomText,text=t)
+        canvasTextfeld.after(delay, updateText)
+
+    button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555", anchor=S,
+                     font=("Press Start 2P", 23))
+    canvasTextfeld.create_window(400, 270, window=button1)
 
 
 def menu():
     global menuButton1, menuButton2, menuButton3, spielfeld, selectionMarker, selection, menuListMoves, menuListSpecial
+
+    canvasTextfeld.delete("all")
 
     menuListMoves = Button(spielfeld, text="Moves", bg="#fff",
                            highlightthickness=0, bd=0, fg="#000",
@@ -343,7 +377,7 @@ def healthBarReductionPlayer(durchlaeufe, healthReduction):
 
     currentKP = round(currentLifePlayer * 100 - durchlaeufe)
 
-    reduceBalken = lambda: canvasGrafiken.coords(healthbarPlayerColor, 500+ currentKP * 2, 400, 500, 380)
+    reduceBalken = lambda: canvasGrafiken.coords(healthbarPlayerColor, 500 + currentKP * 2, 400, 500, 380)
     canvasGrafiken.after(durchlaeufe * 40, reduceBalken)
 
     changeKPIndex = lambda: canvasGrafiken.itemconfigure(currentKPIndex, text=str(currentKP) + "/ 100")
@@ -449,7 +483,7 @@ def textfightEnde(ende):
 
 
 def outro():
-    global currentLifePlayer, picture
+    global picture
 
     canvasGrafiken.delete("all")
     canvasTextfeld.delete("all")

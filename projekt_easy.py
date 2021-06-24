@@ -13,8 +13,9 @@ def setup():
     canvasTextfeld = Canvas(spielfeld, height=300, width=800, bg="#fff")
     canvasTextfeld.pack()
 
-    #Laden der Bilddateien für die Gruppe und das Projekt mit der Funktion PhotoImage.
-    #Darstellung des Bildes auf dem Canvas mit der Methode create_image und entsprechenden xy-Koordinaten
+    # Laden der Bilddateien für die Gruppe und das Projekt mit der Funktion PhotoImage.
+    # Darstellung des Bildes auf dem Canvas mit der Methode create_image und entsprechenden xy-Koordinaten in Pixeln.
+    #
     spielerFigur = PhotoImage(file="Assets/Images/Gruppe.png")
     spielerFigurAnzeige = canvasSpielfeld.create_image(20, 330, anchor=W, image=spielerFigur)
 
@@ -24,7 +25,7 @@ def setup():
     # Erstellen des Intro-Texts. Hier wird mit tags="intro" eine Art Anker gesetzt, über den das Objekt vom Modul aufgerufen werden kann
     canvasTextfeld.create_text(10,5, width=750, anchor=NW, text="Ein wildes PROJEKT ist aufgetaucht!", font=("Press Start 2P", 35), tags="intro")
 
-    # Erstellen eine Buttons zum laden der Funktion ersteRunde()
+    # Erstellen eines Buttons zum laden der Funktion ersteRunde()
     button1 = Button(spielfeld, text="Auf gehts",highlightthickness=0, bd=0, bg="#fff",fg="#555",command=lambda: ersteRunde())
     canvasTextfeld.create_window(400, 280, window=button1)
 
