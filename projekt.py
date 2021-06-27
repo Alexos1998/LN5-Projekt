@@ -58,7 +58,7 @@ def introStory(round):
     # länge des Strings ausgeführt
     for x in range(len(intro)+1):
         # Eine zeitliche Verzögerung mit 40mal dem Wert von x wird berechnet
-        delay = 40 * x
+        delay = 20 * x
         # Mit ":x" innerhalb eines Listenindexes werden die Werte bis zum Index "x" einbezogen und der Variable text zugewiesen
         text = intro[:x]
         # Der Variable wird die anonyme Funktion lambda zugewiesen. lambda wird der Übergabeparameter "t" mitgegeben, 
@@ -183,7 +183,7 @@ def buttonErsteRunde():
 
 
 def ersteRunde():
-    global canvasTextfeld, button1, delayFrage
+    global canvasTextfeld, button1, delayFrage, turn
 
     canvasTextfeld.delete("intro")
     button1.destroy()
@@ -192,11 +192,11 @@ def ersteRunde():
     turnRandomText = canvasTextfeld.create_text(400, 30, width=800, anchor=N, text="", font=("Press Start 2P", 28))
 
     textRandom = "abcdefghijklmnopqrstuvwxyz0123456789öäüABCDEFGHIJKLMOPQRSTUVWXYZ"
-    gruppeStart = "Die Gruppe fängt an "
-    projektStart = "Das Projekt fängt an"
+    gruppeStart = "Die Gruppe fängt an!"
+    projektStart = "Das Projekt fängt an!"
 
-    randomizer = random.randint(0,1)
-    if randomizer == 0:
+    turn = random.randint(0,1)
+    if turn == 0:
         roundStart = gruppeStart
         spielfeld.bind("<KeyPress-Return>", lambda b: menu())
     else:
@@ -204,22 +204,20 @@ def ersteRunde():
         spielfeld.bind("<KeyPress-Return>", lambda b: projectAction())
 
     index = 0
-    for x in range(36):
+    for x in range(len(projektStart)+16):
 
         if x < 15:
             delay = 90 * x
-            text = ''.join(random.sample(textRandom,19))
+            text = "".join(random.sample(textRandom,20))
         else:
             delay = 500 + 60 * x
-            textEnd = ''.join(random.sample(textRandom,19))
+            textEnd = "".join(random.sample(textRandom,20))
             text = roundStart[:index] + textEnd[index:]
             index += 1
         updateText = lambda t=text: canvasTextfeld.itemconfigure(turnRandomText,text=t)
         canvasTextfeld.after(delay, updateText)
 
-    button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555", anchor=S,
-                     font=("Press Start 2P", 23))
-    canvasTextfeld.create_window(400, 270, window=button1)
+    button1 = canvasTextfeld.create_text(400,288, text="PRESS ENTER", anchor=S, fill="#555", font=("Press Start 2P", 23))
 
 
 def menu():
@@ -242,13 +240,13 @@ def menu():
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W, tags="menu")
 
-    menuButton2 = Button(spielfeld, text="Energy Booster", bg="#fff",
+    menuButton2 = Button(spielfeld, text="Energy trinken", bg="#fff",
                          highlightthickness=0, bd=0, fg="#555", anchor=W,
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 170, window=menuButton2, anchor=W, tags="menu")
 
     menuButton3 = Button(spielfeld,
-                         text="Kaffee Booster", bg="#fff",
+                         text="Kaffee trinken", bg="#fff",
                          highlightthickness=0, bd=0, fg="#555", anchor=W,
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 240, window=menuButton3, anchor=W, tags="menu")
@@ -267,27 +265,27 @@ def menuNavigation():
 def menuHighlight(keystroke):
     global menuSelectionUpDown, menuSelectionLeftRight, selection
 
-    if keystroke.keysym == "Right" or keystroke == "Right":
-        menuSelectionUpDown = 0
+    if keystroke.keysym == "Right":
         if menuSelectionLeftRight == 0:
+            menuSelectionUpDown = 0
             menuSelectionLeftRight += 1
     elif keystroke.keysym == "Left":
-        menuSelectionUpDown = 0
         if menuSelectionLeftRight == 1:
+            menuSelectionUpDown = 0
             menuSelectionLeftRight -= 1
 
-    if menuSelectionLeftRight < 1:
+    if menuSelectionLeftRight == 0:
         menuListMoves.configure(fg="#000")
         menuListSpecial.configure(fg="#555")
         menuButton1.configure(text="Power Nap")
-        menuButton2.configure(text="Energy Booster")
-        menuButton3.configure(text="Kaffee Booster")
+        menuButton2.configure(text="Energy trinken")
+        menuButton3.configure(text="Kaffee trinken")
     elif menuSelectionLeftRight == 1:
         menuListMoves.configure(fg="#555")
         menuListSpecial.configure(fg="#000")
         menuButton1.configure(text="Gruppenarbeit")
         menuButton2.configure(text="Nachtschicht")
-        menuButton3.configure(text="Keine Idee mehr")
+        menuButton3.configure(text="Schummeln")
 
     if keystroke.keysym == "Down":
         if menuSelectionUpDown < 3:
@@ -304,50 +302,181 @@ def menuHighlight(keystroke):
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,1))
+            spielfeld.bind("<KeyPress-Return>", lambda b: playerAction(1))
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0,0.5))
+            spielfeld.bind("<KeyPress-Return>", lambda b: playerAction(4))
     elif menuSelectionUpDown == 2:
         selectionMarker = canvasTextfeld.create_image(95, 167, anchor=E, image=selection, tags="menu")
         menuButton2.configure(fg="black", font=("Press Start 2P", 25))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(1,0))
+            spielfeld.bind("<KeyPress-Return>", lambda b: playerAction(2))
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: action5())
+            spielfeld.bind("<KeyPress-Return>", lambda b: playerAction(5))
     elif menuSelectionUpDown == 3:
         selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection,tags="menu")
         menuButton3.configure(fg="black", font=("Press Start 2P", 25))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         if menuSelectionLeftRight == 0:
-            spielfeld.bind("<KeyPress-Return>", lambda b: healthDiffCalc(0.2,0))
+            spielfeld.bind("<KeyPress-Return>", lambda b: playerAction(3))
         else:
-            spielfeld.bind("<KeyPress-Return>", lambda b: action6())
+            spielfeld.bind("<KeyPress-Return>", lambda b: playerAction(6))
     elif menuSelectionUpDown == 0:
         menuButton3.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         spielfeld.unbind("<KeyPress-Return>")
 
+def playerAction(move):
+    global healing
+
+    missChance = 0
+    dmgPlayer = 0
+    healing = "no"
+
+    if move == 1:
+        actionText = "Die Gruppe hat einen Power Nap gemacht!"
+        dmgPlayer = round(0.1 +random.randint(-5,20)/100,2)
+        dmgProject = 0
+        healing = "yes"
+    elif move == 2:
+        actionText = "Die Gruppe hat Energy getrunken!"
+        dmgProject = 0.2
+        missChance = random.randint(1, 5)
+    elif move == 3:
+        actionText = "Die Gruppe hat Kaffee getrunken!"
+        dmgProject = 0.25
+        missChance = random.randint(1, 4)
+    elif move == 4:
+        actionText = "Die Gruppe hat Gruppenarbeit eingesetzt!"
+        dmgProject = round(0.3 +random.randint(-10,0)/100,2)
+        missChance = random.randint(1, 3)
+    elif move == 5:
+        actionText = "Die Gruppe hat eine Nachtschicht eingelegt!"
+        dmgProject = round(0.33 + random.randint(-20,5)/100,2)
+        selfDamageModifier = random.randint(1,10)
+        if selfDamageModifier <= 3:
+            dmgPlayer = round(0.1 +random.randint(-9,8)/100,2)
+            actionText= "Die Gruppe ist übermüdet und fügt sich selbst Schaden zu"
+    else:
+        actionText = "Die Gruppe hat Schummeln benutzt!"
+        dmgProject = 0.5
+        missSchummeln = random.randint(1, 10)
+        selfDamageModifier = random.randint(1,10)
+        if missSchummeln <= 7:
+            dmgProject = 0
+            dmgPlayer = 0.3 if selfDamageModifier <= 7 else 0.09 if selfDamageModifier <= 9 else 0
+        if dmgPlayer > 0:
+            actionText = "Die Gruppe ist beim Schummeln aufgeflogen!"
+        elif dmgPlayer == 0 and dmgProject == 0:
+            missChance = 1
 
 
+    if missChance == 1:
+        miss = "yes"
+        dmgProject = 0
+    else:
+        miss = "no"
 
-def healthDiffCalc(player, project):
-    global healthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer, dmgProject, dmgPlayer
+    dmgProcessing(dmgPlayer,dmgProject, actionText, miss)
+
+def projectAction():
+    global healing, currentLifeProject
+
+    missChance = 0
+    miss = "no"
+    dmgProject = 0
+    healing = "no"
+    randomizer = random.randint(1,100)
+
+    if randomizer <= 5:
+        actionText = "Das Projekt setzt Moodle ist gnadenlos!!1!11! ein"
+        dmgPlayer = 1
+        missChance = 0
+    elif randomizer <= 25 and currentLifeProject <= 0.9:
+        actionText = "Das Projekt wird schwieriger!"
+        dmgPlayer = 0
+        dmgProject = round(0.1 +random.randint(-5,20)/100,2)
+        healing = "yes"
+    elif randomizer <= 50:
+        actionText = "Das Projekt hat 3 gemacht!"
+        dmgPlayer = round(0.2 + random.randint(-5,5)/100, 2)
+        missChance = random.randint(1, 5)
+    elif randomizer <= 75:
+        actionText = "Das Projekt hat 4 gemacht!"
+        dmgPlayer = round(0.25 + random.randint(-5,5)/100,2)
+        missChance = random.randint(1, 5)
+    elif randomizer <= 90:
+        actionText = "Das Projekt hat 5 gemacht!"
+        dmgPlayer = round(0.3 + random.randint(-10,15)/100,2)
+        missChance = random.randint(1, 4)
+    elif randomizer <= 100:
+        actionText = "Das Projekt hat 6 gemacht!"
+        dmgPlayer = round(0.3 + random.randint(-5,20)/100,2)
+        missChance = random.randint(1, 3)
+
+
+    if missChance == 1:
+        dmgPlayer = 0
+        miss ="yes"
+
+    dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
+
+def dmgProcessing(player, project, text, miss):
+    global menuSelectionLeftRight, menuSelectionUpDown, menhealthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer, dmgProject, dmgPlayer
+
+
+    spielfeld.unbind("<KeyPress-Down>")
+    spielfeld.unbind("<KeyPress-Up>")
+    spielfeld.unbind("<KeyPress-Right>")
+    spielfeld.unbind("<KeyPress-Left>")
+    canvasTextfeld.delete("all")
+    menuSelectionLeftRight = 0
+    menuSelectionUpDown = 0
+
+    buttonNextRound()
+    textMove = canvasTextfeld.create_text(400, 20,width=750, anchor=N, text="", font=("Press Start 2P", 25))
+
+    for x in range(len(text)+1):
+        delay = 40 * x
+        actionText = text[:x]
+        updateText = lambda t=actionText: canvasTextfeld.itemconfigure(textMove, text=t)
+        canvasTextfeld.after(delay, updateText)
+    if miss == "yes":
+        miss = "Der Angriff hat verfehlt!"
+        for x in range(len(miss) + 1):
+            delay = 2000 + 40 * x
+            missText = miss[:x]
+            updateText = lambda t=missText: canvasTextfeld.itemconfigure(textMove, text=t)
+            canvasTextfeld.after(delay, updateText)
+
 
     if player > 0:
-        dmgAnimationPlayer(1)
-        dmgPlayer = player
+        canvasGrafiken.after(delay + 500, lambda: dmgAnimationPlayer(1))
         healthReductionPlayer = int(round(player * 100))
-        canvasGrafiken.after(500, lambda: healthBarReductionPlayer(1, healthReductionPlayer))
+        dmgPlayer = player
+        canvasGrafiken.after(delay + 800, lambda: healthBarReductionPlayer(1, healthReductionPlayer))
 
     if project > 0:
-        dmgAnimationProject(1)
-        dmgProject = project
+        canvasGrafiken.after(delay + 500, lambda: dmgAnimationProject(1))
         healthReductionProject = int(round(project * 100))
-        canvasGrafiken.after(500, lambda: healthBarReductionProject(1, healthReductionProject))
+        dmgProject = project
+        canvasGrafiken.after(delay + 800, lambda: healthBarReductionProject(1, healthReductionProject))
+
+def buttonNextRound():
+    global turn
+    button1 = Button(spielfeld, text="PRESS ENTER", highlightthickness=0, bd=0, bg="#fff", fg="#555", anchor=S,
+                     font=("Press Start 2P", 23))
+    canvasTextfeld.create_window(400, 270, window=button1)
+    if turn == 1:
+        spielfeld.bind("<KeyPress-Return>", lambda b: menu())
+        turn = 0
+    else:
+        spielfeld.bind("<KeyPress-Return>", lambda b: projectAction())
+        turn = 1
+
 
 def dmgAnimationPlayer(durchlaeufe):
 
@@ -373,9 +502,14 @@ def dmgAnimationProject(durchlaeufe):
 
 
 def healthBarReductionPlayer(durchlaeufe, healthReduction):
-    global currentLifePlayer
+    global currentLifePlayer, healing
 
-    currentKP = round(currentLifePlayer * 100 - durchlaeufe)
+    if healing == "no":
+        currentKP = round(currentLifePlayer * 100 - durchlaeufe)
+    else:
+        currentKP = round(currentLifePlayer * 100 + durchlaeufe)
+        if currentKP > 100:
+            currentKP = 100
 
     reduceBalken = lambda: canvasGrafiken.coords(healthbarPlayerColor, 500 + currentKP * 2, 400, 500, 380)
     canvasGrafiken.after(durchlaeufe * 40, reduceBalken)
@@ -391,17 +525,28 @@ def healthBarReductionPlayer(durchlaeufe, healthReduction):
     if durchlaeufe < healthReduction and currentKP > 0:
         durchlaeufe += 1
         healthBarReductionPlayer(durchlaeufe, healthReduction)
-    elif currentKP > 0:
+    elif currentKP > 0 and healing == "no":
         currentLifePlayer -= dmgPlayer
+    elif healing == "yes":
+        currentLifePlayer += dmgPlayer
+        if currentLifePlayer > 1:
+            currentLifePlayer = 1
     else:
         currentLifePlayer = 0
         canvasGrafiken.after(durchlaeufe * 40, lambda: spielEnde("verloren"))
 
 
 def healthBarReductionProject(durchlaeufe, healthReduction):
-    global currentLifeProject
+    global currentLifeProject, healing
 
-    currentKP = round(currentLifeProject * 100 - durchlaeufe)
+    print(healing)
+
+    if healing == "no":
+        currentKP = round(currentLifeProject * 100 - durchlaeufe)
+    else:
+        currentKP = round(currentLifeProject * 100 + durchlaeufe)
+        if currentKP > 100:
+            currentKP = 100
 
     reduceBalken = lambda: canvasGrafiken.coords(healthbarProjectColor, 123, 100, 123 + currentKP * 2, 120)
     canvasGrafiken.after(durchlaeufe * 40, reduceBalken)
@@ -414,8 +559,12 @@ def healthBarReductionProject(durchlaeufe, healthReduction):
     if durchlaeufe < healthReduction and currentKP > 0:
         durchlaeufe += 1
         healthBarReductionProject(durchlaeufe, healthReduction)
-    elif currentKP > 0:
+    elif currentKP > 0 and healing == "no":
         currentLifeProject -= dmgProject
+    elif healing == "yes":
+        currentLifeProject += dmgProject
+        if currentLifeProject > 1:
+            currentLifeProject = 1
     else:
         currentLifeProject = 0
         canvasGrafiken.after(durchlaeufe * 40, lambda: spielEnde("gewonnen"))
@@ -428,6 +577,7 @@ def spielEnde(ende):
     spielfeld.unbind("<KeyPress-Right>")
     spielfeld.unbind("<KeyPress-Left>")
     spielfeld.unbind("<KeyPress-Return>")
+    canvasTextfeld.delete("all")
 
     if ende == "gewonnen":
         canvasGrafiken.after(500, lambda: animationGewonnen(1, 300))
@@ -502,7 +652,7 @@ def outro():
         outro = 'Eine 3. Im anderen Kontext ist befriedigend das Ziel. Hier ist es zumindest keine Schande.'
     elif currentLifePlayer > 0.2:
         picture = PhotoImage(file="Assets/Images/coronavirus.png")
-        outro = "Knapp getroffen gilt auch noch. Mit der 4 hat man es zwar gerade noch so geschafft, aber solange die Note hinter einem Kaffeefleck auf dem Zeugnis verschwindet, passt das schon."
+        outro = "Knapp getroffen gilt auch noch. Mit der 4 hat man es zwar nur noch geradeso geschafft, aber solange die Note hinter einem Kaffeefleck auf dem Zeugnis verschwindet, passt das schon."
     elif currentLifePlayer > 0:
         picture = PhotoImage(file="Assets/Images/Gruppe.png")
         outro = "Uff, eine 5. Das tut weh! Sich zu schämen ist hier wohl angebracht. Der einzige Wehrmutstropfen ist: Es geht noch schlimmer."
@@ -513,7 +663,7 @@ def outro():
     canvasGrafiken.create_image(400, 250, anchor= CENTER, image=picture)
 
     for x in range(len(outro)+1):
-        delay = 40 * x
+        delay = 30 * x
         text = outro[:x]
         textUpdate = lambda text=text: canvasTextfeld.itemconfigure(outroText, text=text)
         canvasTextfeld.after(delay, textUpdate)
@@ -535,6 +685,8 @@ menuSelectionLeftRight = 0
 # currentLife sind die Prozentualen Leben der
 currentLifeProject = 1
 currentLifePlayer = 1
+
+healing = "no"
 
 
 #Aufrufe der ersten Funktion setupWindow()
