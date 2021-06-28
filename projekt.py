@@ -22,7 +22,7 @@ def setupWindow():
     introStory(1)
 
 def introStory(round):
-    # Die variable picture wird global gesetzt, da Bildelemente mit PhotoImage nur lokal geladen werden und der
+    # Die Variable picture wird global gesetzt, da Bildelemente mit PhotoImage nur lokal geladen werden und der
     # Tkinter.mainloop die Dateien sonst nicht erkennt
     global picture, text
 
