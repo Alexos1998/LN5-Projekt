@@ -125,7 +125,7 @@ def setup():
     whiteBackgroundProject = canvasGrafiken.create_image(780, 150, anchor=E,image=whiteBackground, tag="whitePr")
 
     playerFigur = PhotoImage(file="Assets/Images/013 Gruppe.png")
-    playerFigurAnzeige = canvasGrafiken.create_image(800, 330, anchor=W, image=playerFigur)
+    playerFigurAnzeige = canvasGrafiken.create_image(800, 350, anchor=W, image=playerFigur)
 
     projectFigur = PhotoImage(file="Assets/Images/012 Projekt Kampf Hintergrund.png")
     projectFigurAnzeige = canvasGrafiken.create_image(0, 150, anchor=E, image=projectFigur)
@@ -301,7 +301,7 @@ def menu():
                             font=("Press Start 2P", 30))
     canvasTextfeld.create_window(280, 0, window=menuListSpecial, anchor=NW, tags="menu")
 
-    menuButton1 = Button(tkinterFenster, text="Power Nap", bg="#fff",
+    menuButton1 = Button(tkinterFenster, text="Gruppenarbeit", bg="#fff",
                          bd=0, fg="#555", anchor=W,
                          font=("Press Start 2P", 20))
     canvasTextfeld.create_window(100, 100, window=menuButton1, anchor=W, tags="menu")
@@ -355,13 +355,13 @@ def menuSelection(keystroke):
         # Anpassung von Button-Optionen erfolgt über die Tkinter Methode .configure
         menuListMoves.configure(fg="#000")
         menuListSpecial.configure(fg="#555")
-        menuButton1.configure(text="Power Nap")
+        menuButton1.configure(text="Gruppenarbeit")
         menuButton2.configure(text="Energy trinken")
         menuButton3.configure(text="Kaffee trinken")
     elif menuSelectionLeftRight == 1:
         menuListMoves.configure(fg="#555")
         menuListSpecial.configure(fg="#000")
-        menuButton1.configure(text="Gruppenarbeit")
+        menuButton1.configure(text="Power Nap")
         menuButton2.configure(text="Nachtschicht")
         menuButton3.configure(text="Schummeln")
 
@@ -426,72 +426,100 @@ def menuSelection(keystroke):
 
 # Funktion in der die verschiedenen Fähigkeiten der Gruppe definiert werden
 def playerAction(move):
+    # Der boolean healing wird später in der Dmg Berechnung benötigt
     global healing
 
-    # Definieren einiger variablen für die Chance zu verfehlen, den Schaden, den der Spieler erleidet und ob eine
-    # abfrage ob die ausgeführte Fähigkeit heilen können soll.
-
+    # Definieren einiger variablen
+    # Chance, dass die Aktion verfehlt (missChance) wird mit 0 definiert
     missChance = 0
+    # Der Schaden, den der Spieler standardmäßig erleidet wird mit 0 definiert. Die Variable wird als Übergabeparameter
+    # übergeben und darf nicht undefiniert bleiben
     dmgPlayer = 0
+    # Ein boolean, ob die Aktion heilen, oder SChaden zufügen soll wird definiert
     healing = FALSE
 
+    #Der Übergabeparameter bestimmt, welche Aktion verwendet wird.
+
     if move == 1:
-        actionText = "Die Gruppe hat einen Power Nap gemacht!"
-        dmgPlayer = round(0.1 +random.randint(-5,20)/100,2)
-        dmgProject = 0
-        healing = TRUE
+        # Einer Variable wird der String zur Textausgabe der Aktion zugewiesen
+        actionText = "Die Gruppe hat in einem TEAM gearbeitet! Toll, ein anderer machts!"
+        # Berechnung des Schadens der der KI zugefügt wird, als "0."-Zahl. Round(...,2) rundet genau auf 2 Nachkommastellen
+        # Schadenswerte werden basierend auf einem Grundwert + einen random Wert errechnet.
+        dmgProject = round(0.3 +random.randint(-15,10)/100,2)
+        # Die Chance, dass die Aktion verfehlt, wird über eine random Chance bestimmt
+        missChance = random.randint(1, 8)
     elif move == 2:
-        actionText = "Die Gruppe hat Energy getrunken!"
+        actionText = "Die Gruppe hat Energy getrunken! Durch die Energy hat die Gruppe mehr geschafft."
         dmgProject = 0.2
         missChance = random.randint(1, 5)
     elif move == 3:
-        actionText = "Die Gruppe hat Kaffee getrunken!"
-        dmgProject = 0.25
-        missChance = random.randint(1, 4)
+        actionText = "Die Gruppe hat Kaffee getrunken! Nur Zucker, kein Koks."
+        dmgProject = round(0.2 + random.randint(-5, 10)/100,2)
+        missChance = random.randint(1, 5)
     elif move == 4:
-        actionText = "Die Gruppe hat Gruppenarbeit eingesetzt!"
-        dmgProject = round(0.3 +random.randint(-30,0)/100,2)
-        missChance = random.randint(1, 3)
+        actionText = "Die Gruppe hat einen Power Nap gemacht! Es war ein erholsamer Schlaf."
+        # Berechnung des "Schadens" der dem Spieler zugefügt wird. Der Schaden wird später als Leben oben drauf gerechnet
+        dmgPlayer = round(0.3 +random.randint(-5,20)/100,2)
+        # Schaden am Project wird auf 0 gestezt, damit der Übergabeparameter nicht undefiniert bleibt
+        dmgProject = 0
+        # Ein boolean wird definiert, der bestimmt, dass die Aktion heilt, anstatt Schaden zuzufügen
+        healing = TRUE
     elif move == 5:
         actionText = "Die Gruppe hat eine Nachtschicht eingelegt!"
-        dmgProject = round(0.33 + random.randint(-20,5)/100,2)
-        selfDamageModifier = random.randint(1,10)
-        if selfDamageModifier <= 5:
+        dmgProject = round(0.25 + random.randint(-5,15)/100,2)
+        # Eine Zahl zwischen 0 und 1 wird der Variable zugewiesen. Diese bestimmt, ob der Spieler durch die Aktion ebenfalls selbst Schaden erleidet.
+        selfDamageModifier = random.randint(0,1)
+        # Sollte die Zahl 1 sein, fügt die Fähigkeit dem Spieler ebenfalls Schaden zu.
+        if selfDamageModifier == 1:
             dmgPlayer = round(0.1 +random.randint(0,10)/100,2)
+            # Definiert einen neuen Text für die Textausgabe
             actionText= "Die Gruppe ist übermüdet und fügt sich selbst Schaden zu"
     else:
         actionText = "Die Gruppe hat Schummeln benutzt!"
         dmgProject = 0.5
+        # Es werden 2 zufällige Zahlen zwischen 1-10 generiert. Diese werden verwendet, um zu berechnen, ob die Aktion dem Spieler selbst Schaden
+        # zufügt und wie viel.
         missSchummeln = random.randint(1, 10)
         selfDamageModifier = random.randint(1,10)
+        # Sollte die erste Zahl <= 10 sein, trifft die Bedingung zu
         if missSchummeln <= 7:
+            # Der Schaden am Projekt wird auf 0 gesetzt
             dmgProject = 0
+            # Basierend auf der 2ten Random Zahl, wird bestimmt, wie viel Schaden am Spieler verursacht wird
             dmgPlayer = 0.3 if selfDamageModifier <= 7 else 0.09 if selfDamageModifier <= 9 else 0
+        # Sollte Schaden am Spieler verursacht werden, wird dem ActionText ein neuer String übergeben
         if dmgPlayer > 0:
             actionText = "Die Gruppe ist beim Schummeln aufgeflogen!"
+            # Falls gar kein Schaden verursacht wurde, wird die missChance auf 1 gestezt.
         elif dmgPlayer == 0 and dmgProject == 0:
             missChance = 1
 
-
+    # Wenn die missChance 1 ist, verfehlt die Aktion
     if missChance == 1:
+        # Der boolean miss wird auf TRUE gesetzt. Dieser löst später einen 2ten Text aus.
         miss = TRUE
+        # Der Schaden am Projekt wird auf 0 gesetzt
         dmgProject = 0
     else:
+        # Andernfalls wird miss auf FALSE gesetzt
         miss = FALSE
 
+    # Aufrufen der Funktion dmgProcessing, in der Texte und Animationen für die Schadenbeerchnung angezeigt bzw. aufgerufen werden.
+    # An die Funktion werden der Schaden am Spieler, am Projekt, der Aktionstext und boolean miss übergeben
     dmgProcessing(dmgPlayer,dmgProject, actionText, miss)
 
 def projectAction():
     global healing, currentLifeProject
 
     missChance = 0
-    miss = FALSE
     dmgProject = 0
     healing = FALSE
+
+    #Hier wird ausgesucht, welche Aktion die KI Ausführt.
     randomizer = random.randint(1,100)
 
     if randomizer <= 5:
-        actionText = "Das Projekt setzt Moodle ist gnadenlos!!1!11! ein"
+        actionText = "Das Projekt setzt Moodle ist gnadenlos!!1!11! ein! IHR KÖNNT NICHT MEHR FERTIG WERDEN!"
         dmgPlayer = 1
         missChance = 0
     elif randomizer <= 25 and currentLifeProject <= 0.9:
@@ -499,20 +527,20 @@ def projectAction():
         dmgPlayer = 0
         dmgProject = round(0.1 +random.randint(-5,20)/100,2)
         healing = TRUE
-    elif randomizer <= 50:
-        actionText = "Das Projekt hat 3 gemacht!"
+    elif randomizer <= 45:
+        actionText = "Das Projekt hat keinen Bug! Es hat zwei!"
         dmgPlayer = round(0.2 + random.randint(-5,5)/100, 2)
         missChance = random.randint(1, 5)
-    elif randomizer <= 75:
-        actionText = "Das Projekt hat 4 gemacht!"
+    elif randomizer <= 65:
+        actionText = "Das Projekt hat das WLAN-Kabel entfernt!"
         dmgPlayer = round(0.25 + random.randint(-5,5)/100,2)
         missChance = random.randint(1, 5)
-    elif randomizer <= 90:
-        actionText = "Das Projekt hat 5 gemacht!"
+    elif randomizer <= 85:
+        actionText = "Das Projekt hat Thonny zum Absturz gebracht! Ihr habt nicht gespeichert..."
         dmgPlayer = round(0.3 + random.randint(-10,15)/100,2)
         missChance = random.randint(1, 4)
     elif randomizer <= 100:
-        actionText = "Das Projekt hat 6 gemacht!"
+        actionText = "Ein Gruppenmitglied wird krank!"
         dmgPlayer = round(0.3 + random.randint(-5,20)/100,2)
         missChance = random.randint(1, 3)
 
@@ -520,6 +548,9 @@ def projectAction():
     if missChance == 1:
         dmgPlayer = 0
         miss =TRUE
+    else:
+        miss = FALSE
+    miss = TRUE
 
     dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
 
@@ -542,16 +573,18 @@ def dmgProcessing(player, project, text, miss):
 
     # Mit der üblichen Funktion werden dem Objekt textMove der String aus dem Übergabeparameter actionText inkrementell
     # übergeben
+    # SChleife in der actionText des Parameters text ausgegeben wird
     for x in range(len(text)+1):
         delay = 40 * x
         actionText = text[:x]
         updateText = lambda t=actionText: canvasTextfeld.itemconfigure(textMove, text=t)
         canvasTextfeld.after(delay, updateText)
+
     # Sollte der Parameter miss = TRUE sein, wird zusätzlich ein der String inder Varaible "miss" an textMove übergeben.
     if miss == TRUE:
         miss = "Der Angriff hat verfehlt!"
-        for x in range(len(miss) + 1):
-            delay = 2000 + 40 * x
+        for x in range(len(miss)+1):
+            delay = delayAfter + 40 * x
             missText = miss[:x]
             updateText = lambda t=missText: canvasTextfeld.itemconfigure(textMove, text=t)
             canvasTextfeld.after(delay, updateText)
