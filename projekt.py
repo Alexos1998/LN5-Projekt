@@ -589,7 +589,9 @@ def dmgProcessing(player, project, text, miss):
         updateText = lambda t=actionText: canvasTextfeld.itemconfigure(textMove, text=t)
         canvasTextfeld.after(delay, updateText)
 
+    # Das entgültige delay der ersten Textausgabe wird in delaAfter zwischengespeichert
     delayAfter = delay + 500
+
     # Sollte der Parameter miss = TRUE sein, wird zusätzlich ein der String inder Varaible "miss" an textMove übergeben.
     if miss == TRUE:
         miss = "Der Angriff hat verfehlt!"
@@ -598,18 +600,21 @@ def dmgProcessing(player, project, text, miss):
             missText = miss[:x]
             updateText = lambda t=missText: canvasTextfeld.itemconfigure(textMove, text=t)
             canvasTextfeld.after(delay, updateText)
+        canvasGrafiken.after(delay, lambda: buttonNextRound())
+
 
     # Sollten die übergebenen Schadenswerte player größer als 0 sein, werden die Animationen für den Kmapf
     # und die Darstellung der Leben geladen.
     if player > 0:
         # Nach dem Delay in dem der Text erstellt wurde, wird zunächst die dmgAnimation aufgerufen mit dem Übergabeparameter (0), dieser
         # zählt die Durchläufe innerhalb der Funktion
-        canvasGrafiken.after(delay + 500, lambda: dmgAnimationPlayer(0))
+        canvasGrafiken.after(delay, lambda: dmgAnimationPlayer(0))
         # Der übergebene Schaden in Prozent also "0." Wert wird in eine ganze Zahl umgerechnet, aufgerundet und als Variable "healthReductionPlayer" gespeichert
         healthReductionPlayer = int(round(player * 100))
         # Die Werte 1, welcher wieder als Index für die Schleifendurchläufe dient, die Variable healthReductionPlayer und der Parameter player, werden nun
         # als Übergabeparameter an die Funktion healtBarReductionPlayer übergeben
-        canvasGrafiken.after(delay + 800, lambda: healthBarReductionPlayer(1, healthReductionPlayer, player))
+        canvasGrafiken.after(delay + 300, lambda: healthBarReductionPlayer(1, healthReductionPlayer, player))
+        canvasGrafiken.after(delay + 300 + healthReductionPlayer * 40, lambda: buttonNextRound())
 
     # Sollten die übergebenen Schadenswerte project und project größer als 0 sein, werden die Animationen für das Projekt geladen.
     # Diese funktionieren genau wie beim Spieler auch
@@ -624,7 +629,6 @@ def dmgProcessing(player, project, text, miss):
         canvasGrafiken.after(delay + 800, lambda: healthBarReductionProject(1, healthReductionProject, project))
 
     # Die Funktion buttonNextRound wird nach dem delay geladen.
-    canvasGrafiken.after(delay, lambda: buttonNextRound())
 
 
 def buttonNextRound():
@@ -863,22 +867,22 @@ def outro():
     outroText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17))
 
     if currentLifePlayer > 0.8:
-        picture = PhotoImage(file="Assets/Images/001_Sternenhimmel.png")
+        picture = PhotoImage(file="Assets/Images/017 Note 1.png")
         outro = "War es ein Wunder? War es pures Können? Das alles spielte keine Rolle. Den Helden war es gelungen, was bis jetzt noch niemandem gelungen war. Sie hatten eine 1 für ihr Projekt bekommen. Der erste Schritt in eine steile Karriere."
     elif currentLifePlayer > 0.6:
-        picture = PhotoImage(file="Assets/Images/002_Schule.png")
+        picture = PhotoImage(file="Assets/Images/018 Note 2.png")
         outro = "Ach eine 2. Die vielleicht beste Note. Viele würden jetzt protestieren und sagen: „Momentmal eine 1 ist doch viel besser. Doch ist sie das? Also faktisch ist sie natürlich besser! Aber wer will schon der Streber sein, der für eine Zahl so ackert. Nein die zwei ist perfekt!“"
     elif currentLifePlayer > 0.4:
-        picture = PhotoImage(file="Assets/Images/003_Schule_Apokalypse.png")
+        picture = PhotoImage(file="Assets/Images/019 Note 3.png")
         outro = 'Eine 3. Im anderen Kontext ist befriedigend das Ziel. Hier ist es zumindest keine Schande.'
     elif currentLifePlayer > 0.2:
-        picture = PhotoImage(file="Assets/Images/coronavirus.png")
+        picture = PhotoImage(file="Assets/Images/015 Note 4.png")
         outro = "Knapp getroffen gilt auch noch. Mit der 4 hat man es zwar nur noch geradeso geschafft, aber solange die Note hinter einem Kaffeefleck auf dem Zeugnis verschwindet, passt das schon."
     elif currentLifePlayer > 0:
-        picture = PhotoImage(file="Assets/Images/Gruppe.png")
+        picture = PhotoImage(file="Assets/Images/016 Note 5.png")
         outro = "Uff, eine 5. Das tut weh! Sich zu schämen ist hier wohl angebracht. Der einzige Wehrmutstropfen ist: Es geht noch schlimmer."
     else:
-        picture = PhotoImage(file="Assets/Images/Gruppe.png")
+        picture = PhotoImage(file="Assets/Images/014 Note 6.png")
         outro = "Eine 6? Da könnte man ja glatt meinen die Helden hätten es gar nicht versucht. Wobei Helden in diesem Fall wohl nicht mehr angebracht ist. Nennen wir sie einfach Personen. Ja die Personen haben ins Klo gegriffen!"
 
     canvasGrafiken.create_image(400, 250, anchor=CENTER, image=picture)
