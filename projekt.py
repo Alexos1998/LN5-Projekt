@@ -458,7 +458,7 @@ def playerAction(move):
         missChance = random.randint(1, 8)
     elif move == 2:
         actionText = "Die Gruppe hat Energy getrunken! Durch die Energy hat die Gruppe mehr geschafft."
-        dmgProject = 0.2
+        dmgProject = 1
         missChance = random.randint(1, 5)
     elif move == 3:
         actionText = "Die Gruppe hat Kaffee getrunken! Nur Zucker, kein Koks."
@@ -545,7 +545,7 @@ def projectAction():
         dmgPlayer = round(0.25 + random.randint(-5, 5) / 100, 2)
         missChance = random.randint(1, 5)
     elif randomizer <= 85:
-        actionText = "Das Projekt hat Thonny zum Absturz gebracht! Ihr habt nicht gespeichert..."
+        actionText = "Das Projekt hat Thonny zum Absturz gebracht!"
         dmgPlayer = round(0.3 + random.randint(-10, 15) / 100, 2)
         missChance = random.randint(1, 4)
     elif randomizer <= 100:
@@ -794,7 +794,7 @@ def healthBarReductionProject(durchlaeufe, healthReduction, dmgProject):
     else:
         # Sollte keine der obigen Bedingungen zutreffen, bzw. ist currentKP = 0, dann wird currentLifePlayer ebenfalls auf 0 gesetzt und
         # die Funktion spielEnde wird im gleichen Delay wie die anderen Funktionen geladen. Dabei wird der Funktion der Übergabeparameter
-        # "verloren" mitgegeben
+        # "gewonnen" mitgegeben
         currentLifeProject = 0
         canvasGrafiken.after(durchlaeufe * 40, lambda: spielEnde("gewonnen"))
 
