@@ -614,6 +614,7 @@ def dmgProcessing(player, project, text, miss):
         # Die Werte 1, welcher wieder als Index für die Schleifendurchläufe dient, die Variable healthReductionPlayer und der Parameter player, werden nun
         # als Übergabeparameter an die Funktion healtBarReductionPlayer übergeben
         canvasGrafiken.after(delay + 300, lambda: healthBarReductionPlayer(1, healthReductionPlayer, player))
+        # Die Funktion buttonNextRound wird nach dem delay geladen.
         canvasGrafiken.after(delay + 300 + healthReductionPlayer * 40, lambda: buttonNextRound())
 
     # Sollten die übergebenen Schadenswerte project und project größer als 0 sein, werden die Animationen für das Projekt geladen.
@@ -621,14 +622,15 @@ def dmgProcessing(player, project, text, miss):
     if project > 0:
         # Nach dem Delay in dem der Text erstellt wurde, wird zunächst die dmgAnimation aufgerufen mit dem Übergabeparameter (0), dieser
         # zählt die Durchläufe innerhalb der Funktion
-        canvasGrafiken.after(delay + 500, lambda: dmgAnimationProject(0))
+        canvasGrafiken.after(delay, lambda: dmgAnimationProject(0))
         # Der übergebene Schaden in Prozent also "0." Wert wird in eine ganze Zahl umgerechnet, aufgerundet und als Variable "healthReductionProject" gespeichert
         healthReductionProject = int(round(project * 100))
         # Die Werte 1, welcher wieder als Index für die Schleifendurchläufe dient, die Variable healthReductionProject und der Parameter player, werden nun
         # als Übergabeparameter an die Funktion healtBarReductionProject übergeben
-        canvasGrafiken.after(delay + 800, lambda: healthBarReductionProject(1, healthReductionProject, project))
+        canvasGrafiken.after(delay + 300, lambda: healthBarReductionProject(1, healthReductionProject, project))
+        # Die Funktion buttonNextRound wird nach dem delay geladen.
+        canvasGrafiken.after(delay + 300 + healthReductionProject * 40, lambda: buttonNextRound())
 
-    # Die Funktion buttonNextRound wird nach dem delay geladen.
 
 
 def buttonNextRound():
