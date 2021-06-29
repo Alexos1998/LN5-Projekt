@@ -558,7 +558,7 @@ def projectAction():
         miss = TRUE
     else:
         miss = FALSE
-    miss = TRUE
+
 
     dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
 
