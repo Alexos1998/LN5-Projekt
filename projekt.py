@@ -17,9 +17,10 @@ def setupWindow():
     canvasTextfeld.configure(bg="#fff")
     canvasTextfeld.pack()
 
-    # Der Funktion introStory wird mit 1 als Übergabeparameter aufgerufen. 
+    # Der Funktion introStory wird mit 1 als Übergabeparameter aufgerufen.
     # Der Parameter wird als Counter verwendet und zählt die Anzahl der Durchläufe der Funktion
     introStory(0)
+
 
 def introStory(round):
     # Die Variable picture wird global gesetzt, da Bildelemente mit PhotoImage nur lokal geladen werden und der
@@ -29,9 +30,10 @@ def introStory(round):
     # Mit .delete werden alle Elemente mit dem tag "intro" vom Canvas gelöscht. Dies ist eine Canvas eigene Methode
     canvasTextfeld.delete("intro")
 
-    # Ein leerer String wird als Text im canvasTextfeld erstellt. Dem Textobjekt werden dabei die Position in x,y Koordinaten 
+    # Ein leerer String wird als Text im canvasTextfeld erstellt. Dem Textobjekt werden dabei die Position in x,y Koordinaten
     # mitgegeben. Ebenfalls werden die Breite (width), Ausrichtung (anchor) und Schriftart (font), sowie größe festgelegt.
-    introText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17), tags="intro")
+    introText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17),
+                                           tags="intro")
 
     # Basierend auf dem Parameter round wird ein Foto mit der Funktion PhotoImage geladen und ein Text wird der Variable
     # intro zugewiesen
@@ -58,7 +60,7 @@ def introStory(round):
     if round == 5:
         picture = PhotoImage(file="Assets/Images/007 Lehrer.png")
         intro = "„So Klasse! Ich habe mir etwas überlegt. Da wir aufgrund der Schmorona-Pandemie leider keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht’s!“"
-    
+
     if round == 6:
         picture = PhotoImage(file="Assets/Images/005 Klassenzimmer Voll.png")
         intro = ""
@@ -76,12 +78,12 @@ def introStory(round):
 
     # In einer Schleife wird dem leeren Text inkrementell der Inhalt von intro zugewiesen. Schleife wird n + 1 mal basierend auf der
     # länge des Strings ausgeführt
-    for x in range(len(intro)+1):
+    for x in range(len(intro) + 1):
         # Eine zeitliche Verzögerung mit 40mal dem Wert von x wird berechnet
         delay = 30 * x
         # Mit ":x" innerhalb eines Listenindexes werden die Werte bis zum Index "x" einbezogen und der Variable text zugewiesen
         text = intro[:x]
-        # Der Variable wird die anonyme Funktion lambda zugewiesen. lambda wird der Übergabeparameter "t" mitgegeben, 
+        # Der Variable wird die anonyme Funktion lambda zugewiesen. lambda wird der Übergabeparameter "t" mitgegeben,
         # welcher mit text gleichgesetzt wird (t=text:),
         # nach dem ":" folgt dann der Inhalt der Funktion. Hier wird die Canvas-Methode .itemconfigure aufgerufen, um den text des Canvas Objekts anzupassen
         # Der Text ist dabei gleich dem Übergabeparameter "t", also dem vorher definierten text
@@ -96,12 +98,12 @@ def buttonNextIntro(round):
     global button
     # Mit der Funktion Button, wird ein aktivierbarer Knopf erstellt, Option "bd=0" entfernt die Ränder vom Knopf
     button = Button(tkinterFenster, text="PRESS ENTER", bd=0, bg="#fff", fg="#555", anchor=S,
-                     font=("Press Start 2P", 16))
+                    font=("Press Start 2P", 16))
     # Canvas-Methode .create_window erstellt ein Fenster bei x,y-Koordinaten und setzt lädt button im Fenster
     canvasTextfeld.create_window(400, 275, window=button)
     # Tkinter-Methode .bind weißt dem Tastendruck Enter, die Funktion "introStory" zu.
     tkinterFenster.bind("<KeyPress-Return>", lambda b: introStory(round))
-    
+
     # Wenn round = 5 ist, wird der Tastendruck für Enter neu definiert und führt die Funktion setup aus
     if round == 9:
         tkinterFenster.bind("<KeyPress-Return>", lambda b: setup())
@@ -116,13 +118,13 @@ def setup():
     canvasGrafiken.delete("all")
     canvasTextfeld.delete("all")
     tkinterFenster.unbind("<KeyPress-Return>")
-    
+
     # Mehrere Bildobjekte, für die Darstellung der Charaktere, werden geladen und mit der Methode .create_image angezeigt.
     whiteBackground = PhotoImage(file="Assets/Images/White.png")
     # Weiße Hintergründe werden für die Beiden Entitäten erstellt. Diese werden später für die dmgAnimation benötigt.
     # Ein tag muss hier festgelegt werden, um später mit einer speziellen Methode auf die Objekte zugreifen zu können.
-    whiteBackgroundPlayer = canvasGrafiken.create_image(20, 350, anchor=W,image=whiteBackground, tag="whitePl")
-    whiteBackgroundProject = canvasGrafiken.create_image(780, 150, anchor=E,image=whiteBackground, tag="whitePr")
+    whiteBackgroundPlayer = canvasGrafiken.create_image(20, 350, anchor=W, image=whiteBackground, tag="whitePl")
+    whiteBackgroundProject = canvasGrafiken.create_image(780, 150, anchor=E, image=whiteBackground, tag="whitePr")
 
     playerFigur = PhotoImage(file="Assets/Images/013 Gruppe.png")
     playerFigurAnzeige = canvasGrafiken.create_image(800, 350, anchor=W, image=playerFigur)
@@ -140,7 +142,7 @@ def figurenMove(coordinates, durchlaeufe):
 
     # Mit der Methode .move werden die Grafiken bei jedem Durchlauf um x,y Koordinaten verschoben.
     # lambda verhindert, dass die Aktion direkt ausgeführt wird und später mit der .after Methode, in einem delay aufgerufen
-    # werden kann. 
+    # werden kann.
     moveplayerFigur = lambda: canvasGrafiken.move(playerFigurAnzeige, -5, 0)
     canvasGrafiken.after(durchlaeufe * 10, moveplayerFigur)
 
@@ -155,7 +157,7 @@ def figurenMove(coordinates, durchlaeufe):
         canvasGrafiken.after(1700, lambda: introFight())
         canvasGrafiken.after(1700, lambda: tkinterFensterGraphic())
 
-    #Falls coordinates != 20, also die Verscheibung noch nicht abgeschlossen ist, wird durchlaeufe erhöht und die Funktion erneut aufgerufen
+    # Falls coordinates != 20, also die Verscheibung noch nicht abgeschlossen ist, wird durchlaeufe erhöht und die Funktion erneut aufgerufen
     else:
         durchlaeufe += 1
         figurenMove(coordinates, durchlaeufe)
@@ -167,13 +169,16 @@ def tkinterFensterGraphic():
     # Erstellen mehrerer Text und Bild Elemente auf dem Canvas, zur Dartsellung von Leben, Namen und kleinen Akzenten
     # Für jedes Element werden tags für entweder den Spieler oder das Projekt hinzugefügt, da diese als Gruppe angesteuert
     # werden sollen
-    playerName = canvasGrafiken.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18), tags="project")
-    projectName = canvasGrafiken.create_text(500, 370, text="GRUPPE", anchor=SW, font=("Press Start 2P", 18), tags="player")
+    playerName = canvasGrafiken.create_text(123, 90, text="PROJEKT", anchor=SW, font=("Press Start 2P", 18),
+                                            tags="project")
+    projectName = canvasGrafiken.create_text(500, 370, text="GRUPPE", anchor=SW, font=("Press Start 2P", 18),
+                                             tags="player")
 
     kraftpunkte = canvasGrafiken.create_text(477, 392, text="KP:", font=("Press Start 2P", 15), tags="player")
     kraftpunkte = canvasGrafiken.create_text(100, 112, text="KP:", font=("Press Start 2P", 15), tags="project")
 
-    currentKPIndex = canvasGrafiken.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18), tags="player")
+    currentKPIndex = canvasGrafiken.create_text(700, 425, text="100/ 100", anchor=E, font=("Press Start 2P", 18),
+                                                tags="player")
 
     playerArrow = PhotoImage(file="Assets/Images/arrowSpieler.png")
     playerHealthBarArrow = canvasGrafiken.create_image(410, 410, anchor=W, image=playerArrow, tags="player")
@@ -193,9 +198,9 @@ def tkinterFensterGraphic():
 
 # Funktion zur Darstellung des Textes zu Beginn des Kampfes
 def introFight():
-
     # Erstellen eines leeren Textobjekts für das Kampf Intro
-    introFight = canvasTextfeld.create_text(400, 10, width=750, anchor=N, text="", font=("Press Start 2P", 35), tags="intro")
+    introFight = canvasTextfeld.create_text(400, 10, width=750, anchor=N, text="", font=("Press Start 2P", 35),
+                                            tags="intro")
     # Text für das Kampf Intro
     intro = "Ein wildes PROJEKT ist aufgetaucht! "
     # Schleife zur inkrementellen Darstelllung des Textes im Textobjekt
@@ -214,11 +219,12 @@ def buttonErsteRunde():
 
     # Erstellung eines Buttons mit dem Text 'Press Enter', Knopf bekommt keine Aktion/ Funktion zugewiesen
     button = Button(tkinterFenster, text="PRESS ENTER", bd=0, bg="#fff", fg="#555", anchor=S,
-                     font=("Press Start 2P", 23))
+                    font=("Press Start 2P", 23))
     # Laden des Knopfes als Canvas-Window
     canvasTextfeld.create_window(400, 270, window=button)
     # Verknüpfen der Enter-Taste mit der Funktion ersteRunde()
     tkinterFenster.bind("<KeyPress-Return>", lambda b: ersteRunde())
+
 
 # Funktion in der bestimmt wird, wer den Kampf beginnt und demnach das Menü lädt oder eine Kampfaktion ausführt
 def ersteRunde():
@@ -229,7 +235,7 @@ def ersteRunde():
     button.destroy()
     tkinterFenster.unbind("<KeyPress-Return>")
 
-    #Erstellen eines leeren TextObjekt auf dem Canvas
+    # Erstellen eines leeren TextObjekt auf dem Canvas
     turnRandomText = canvasTextfeld.create_text(400, 30, width=800, anchor=N, text="", font=("Press Start 2P", 28))
 
     # Festlegen eines strings mit allen Buchstaben und Zahlen. Aus dem String werden zufällige Elemente ausgesucht, um einen
@@ -239,8 +245,8 @@ def ersteRunde():
     gruppeStart = "Die Gruppe fängt an!"
     projektStart = "Das Projekt fängt an!"
 
-    #Eine Zahl zwischen eins und nur wird zufällig generiert und der Variable turn zugewiesen.
-    turn = random.randint(1,1)
+    # Eine Zahl zwischen eins und nur wird zufällig generiert und der Variable turn zugewiesen.
+    turn = random.randint(1, 1)
     # Wenn turn == 0 ist, fängt der Spieler an, bei turn == 1, das Projekt
     # Der Variable roundStart wird der String der beginnenden Entität zugewiesen und die Enter-Taste wird mit der entspechenden
     # Funktion belegt (Wenn der Spieler anfängt wird menu() ausgeführt, wenn das projekt anfängt wird projectAction() ausgeführt
@@ -253,13 +259,13 @@ def ersteRunde():
 
     # Initialisieren eines Indexes der zusätzlich in der Schleife gebraucht wird.
     index = 0
-    for x in range(len(roundStart)+16):
+    for x in range(len(roundStart) + 16):
         # Wenn x kleiner als 15 ist, wird der Variable text eine zufällige Auswahl aus dem String/Liste 'textRandom' zugewiesen und
         # der delay zwischen jeder Zuweisung wird auf 70ms festgelegt
         if x < 15:
             delay = 70 * x
             # Mit der .join Methode werden alle Elemente eines Tuples oder einer Liste zusammengefügt als String
-            text = "".join(random.sample(textRandom,len(roundStart)))
+            text = "".join(random.sample(textRandom, len(roundStart)))
         # Wenn x größer als 15 ist werden dem text inkrementell Elemente aus dem String roundStart angefügt
         elif x >= 15:
             # Im delay wird eine Verzögerung von 500ms eingebaut und die Zuweisung geschieht etwas schneller nach 60ms
@@ -267,17 +273,18 @@ def ersteRunde():
             # Zuerst wird wieder ein random string mit der .join Methode erstellt und der Variable textEnd zugewiesen
             # Anschließend werden der variable text, alle Elemente aus dem String roundStart bis zum Listenindex "index" und
             # alle Elemente des Strings textEnd vom Index bis zum Ende des Strings angefügt
-            textEnd = "".join(random.sample(textRandom,len(roundStart)))
+            textEnd = "".join(random.sample(textRandom, len(roundStart)))
             text = roundStart[:index] + textEnd[index:]
             # Am Ende der Zuweisung wird der "index" um 1 erhöht
             index += 1
         # Mit der Variable updateText und der .after Methode werden die Textelemte inkrementell in das Canvas-Textobjekt turnRandomText
         # geladen
-        updateText = lambda t=text: canvasTextfeld.itemconfigure(turnRandomText,text=t)
+        updateText = lambda t=text: canvasTextfeld.itemconfigure(turnRandomText, text=t)
         canvasTextfeld.after(delay, updateText)
 
-    #Erstellen eines Textfeldes mit dem Text "PRESS ENTER"
-    button = canvasTextfeld.create_text(400,288, text="PRESS ENTER", anchor=S, fill="#555", font=("Press Start 2P", 23))
+    # Erstellen eines Textfeldes mit dem Text "PRESS ENTER"
+    button = canvasTextfeld.create_text(400, 288, text="PRESS ENTER", anchor=S, fill="#555",
+                                        font=("Press Start 2P", 23))
 
 
 def menu():
@@ -292,13 +299,13 @@ def menu():
     # Aufrufen der Knöpfe erfolgt später über zuweisung der Entertaste anstatt über die interne Command Funktion
     # Knöpfe werden also nur zur Textdarstellung benutzt
     menuListMoves = Button(tkinterFenster, text="Moves", bg="#fff",
-                            bd=0, fg="#000",
-                            font=("Press Start 2P", 30))
+                           bd=0, fg="#000",
+                           font=("Press Start 2P", 30))
     canvasTextfeld.create_window(10, 0, window=menuListMoves, anchor=NW, tags="menu")
 
     menuListSpecial = Button(tkinterFenster, text="Spezial", bg="#fff",
-                            bd=0, fg="#555",
-                            font=("Press Start 2P", 30))
+                             bd=0, fg="#555",
+                             font=("Press Start 2P", 30))
     canvasTextfeld.create_window(280, 0, window=menuListSpecial, anchor=NW, tags="menu")
 
     menuButton1 = Button(tkinterFenster, text="Gruppenarbeit", bg="#fff",
@@ -408,7 +415,7 @@ def menuSelection(keystroke):
         else:
             tkinterFenster.bind("<KeyPress-Return>", lambda b: playerAction(5))
     elif menuSelectionUpDown == 3:
-        selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection,tags="menu")
+        selectionMarker = canvasTextfeld.create_image(95, 237, anchor=E, image=selection, tags="menu")
         menuButton3.configure(fg="black", font=("Press Start 2P", 25))
         menuButton2.configure(fg="#555", font=("Press Start 2P", 20))
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
@@ -424,6 +431,7 @@ def menuSelection(keystroke):
         menuButton1.configure(fg="#555", font=("Press Start 2P", 20))
         tkinterFenster.unbind("<KeyPress-Return>")
 
+
 # Funktion in der die verschiedenen Fähigkeiten der Gruppe definiert werden
 def playerAction(move):
     # Der boolean healing wird später in der Dmg Berechnung benötigt
@@ -438,14 +446,14 @@ def playerAction(move):
     # Ein boolean, ob die Aktion heilen, oder SChaden zufügen soll wird definiert
     healing = FALSE
 
-    #Der Übergabeparameter bestimmt, welche Aktion verwendet wird.
+    # Der Übergabeparameter bestimmt, welche Aktion verwendet wird.
 
     if move == 1:
         # Einer Variable wird der String zur Textausgabe der Aktion zugewiesen
         actionText = "Die Gruppe hat in einem TEAM gearbeitet! Toll, ein anderer machts!"
         # Berechnung des Schadens der der KI zugefügt wird, als "0."-Zahl. Round(...,2) rundet genau auf 2 Nachkommastellen
         # Schadenswerte werden basierend auf einem Grundwert + einen random Wert errechnet.
-        dmgProject = round(0.3 +random.randint(-15,10)/100,2)
+        dmgProject = round(0.3 + random.randint(-15, 10) / 100, 2)
         # Die Chance, dass die Aktion verfehlt, wird über eine random Chance bestimmt
         missChance = random.randint(1, 8)
     elif move == 2:
@@ -454,33 +462,33 @@ def playerAction(move):
         missChance = random.randint(1, 5)
     elif move == 3:
         actionText = "Die Gruppe hat Kaffee getrunken! Nur Zucker, kein Koks."
-        dmgProject = round(0.2 + random.randint(-5, 10)/100,2)
+        dmgProject = round(0.2 + random.randint(-5, 10) / 100, 2)
         missChance = random.randint(1, 5)
     elif move == 4:
         actionText = "Die Gruppe hat einen Power Nap gemacht! Es war ein erholsamer Schlaf."
         # Berechnung des "Schadens" der dem Spieler zugefügt wird. Der Schaden wird später als Leben oben drauf gerechnet
-        dmgPlayer = round(0.3 +random.randint(-5,20)/100,2)
+        dmgPlayer = round(0.3 + random.randint(-5, 20) / 100, 2)
         # Schaden am Project wird auf 0 gestezt, damit der Übergabeparameter nicht undefiniert bleibt
         dmgProject = 0
         # Ein boolean wird definiert, der bestimmt, dass die Aktion heilt, anstatt Schaden zuzufügen
         healing = TRUE
     elif move == 5:
         actionText = "Die Gruppe hat eine Nachtschicht eingelegt!"
-        dmgProject = round(0.25 + random.randint(-5,15)/100,2)
+        dmgProject = round(0.25 + random.randint(-5, 15) / 100, 2)
         # Eine Zahl zwischen 0 und 1 wird der Variable zugewiesen. Diese bestimmt, ob der Spieler durch die Aktion ebenfalls selbst Schaden erleidet.
-        selfDamageModifier = random.randint(0,1)
+        selfDamageModifier = random.randint(0, 1)
         # Sollte die Zahl 1 sein, fügt die Fähigkeit dem Spieler ebenfalls Schaden zu.
         if selfDamageModifier == 1:
-            dmgPlayer = round(0.1 +random.randint(0,10)/100,2)
+            dmgPlayer = round(0.1 + random.randint(0, 10) / 100, 2)
             # Definiert einen neuen Text für die Textausgabe
-            actionText= "Die Gruppe ist übermüdet und fügt sich selbst Schaden zu"
+            actionText = "Die Gruppe ist übermüdet und fügt sich selbst Schaden zu"
     else:
         actionText = "Die Gruppe hat Schummeln benutzt!"
         dmgProject = 0.5
         # Es werden 2 zufällige Zahlen zwischen 1-10 generiert. Diese werden verwendet, um zu berechnen, ob die Aktion dem Spieler selbst Schaden
         # zufügt und wie viel.
         missSchummeln = random.randint(1, 10)
-        selfDamageModifier = random.randint(1,10)
+        selfDamageModifier = random.randint(1, 10)
         # Sollte die erste Zahl <= 10 sein, trifft die Bedingung zu
         if missSchummeln <= 7:
             # Der Schaden am Projekt wird auf 0 gesetzt
@@ -506,7 +514,8 @@ def playerAction(move):
 
     # Aufrufen der Funktion dmgProcessing, in der Texte und Animationen für die Schadenbeerchnung angezeigt bzw. aufgerufen werden.
     # An die Funktion werden der Schaden am Spieler, am Projekt, der Aktionstext und boolean miss übergeben
-    dmgProcessing(dmgPlayer,dmgProject, actionText, miss)
+    dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
+
 
 def projectAction():
     global healing, currentLifeProject
@@ -515,8 +524,8 @@ def projectAction():
     dmgProject = 0
     healing = FALSE
 
-    #Hier wird ausgesucht, welche Aktion die KI Ausführt.
-    randomizer = random.randint(1,100)
+    # Hier wird ausgesucht, welche Aktion die KI Ausführt.
+    randomizer = random.randint(1, 100)
 
     if randomizer <= 5:
         actionText = "Das Projekt setzt Moodle ist gnadenlos!!1!11! ein! IHR KÖNNT NICHT MEHR FERTIG WERDEN!"
@@ -525,34 +534,34 @@ def projectAction():
     elif randomizer <= 25 and currentLifeProject <= 0.9:
         actionText = "Das Projekt wird schwieriger!"
         dmgPlayer = 0
-        dmgProject = round(0.1 +random.randint(-5,20)/100,2)
+        dmgProject = round(0.1 + random.randint(-5, 20) / 100, 2)
         healing = TRUE
     elif randomizer <= 45:
         actionText = "Das Projekt hat keinen Bug! Es hat zwei!"
-        dmgPlayer = round(0.2 + random.randint(-5,5)/100, 2)
+        dmgPlayer = round(0.2 + random.randint(-5, 5) / 100, 2)
         missChance = random.randint(1, 5)
     elif randomizer <= 65:
         actionText = "Das Projekt hat das WLAN-Kabel entfernt!"
-        dmgPlayer = round(0.25 + random.randint(-5,5)/100,2)
+        dmgPlayer = round(0.25 + random.randint(-5, 5) / 100, 2)
         missChance = random.randint(1, 5)
     elif randomizer <= 85:
         actionText = "Das Projekt hat Thonny zum Absturz gebracht! Ihr habt nicht gespeichert..."
-        dmgPlayer = round(0.3 + random.randint(-10,15)/100,2)
+        dmgPlayer = round(0.3 + random.randint(-10, 15) / 100, 2)
         missChance = random.randint(1, 4)
     elif randomizer <= 100:
         actionText = "Ein Gruppenmitglied wird krank!"
-        dmgPlayer = round(0.3 + random.randint(-5,20)/100,2)
+        dmgPlayer = round(0.3 + random.randint(-5, 20) / 100, 2)
         missChance = random.randint(1, 3)
-
 
     if missChance == 1:
         dmgPlayer = 0
-        miss =TRUE
+        miss = TRUE
     else:
         miss = FALSE
     miss = TRUE
 
     dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
+
 
 def dmgProcessing(player, project, text, miss):
     global menuSelectionLeftRight, menuSelectionUpDown, menhealthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer
@@ -568,13 +577,13 @@ def dmgProcessing(player, project, text, miss):
     menuSelectionLeftRight = 0
     menuSelectionUpDown = 0
 
-    #Erstellen eines leeren Textobjekt auf dem Canvas
-    textMove = canvasTextfeld.create_text(400, 20,width=750, anchor=N, text="", font=("Press Start 2P", 25))
+    # Erstellen eines leeren Textobjekt auf dem Canvas
+    textMove = canvasTextfeld.create_text(400, 20, width=750, anchor=N, text="", font=("Press Start 2P", 25))
 
     # Mit der üblichen Funktion werden dem Objekt textMove der String aus dem Übergabeparameter actionText inkrementell
     # übergeben
     # SChleife in der actionText des Parameters text ausgegeben wird
-    for x in range(len(text)+1):
+    for x in range(len(text) + 1):
         delay = 40 * x
         actionText = text[:x]
         updateText = lambda t=actionText: canvasTextfeld.itemconfigure(textMove, text=t)
@@ -584,7 +593,7 @@ def dmgProcessing(player, project, text, miss):
     # Sollte der Parameter miss = TRUE sein, wird zusätzlich ein der String inder Varaible "miss" an textMove übergeben.
     if miss == TRUE:
         miss = "Der Angriff hat verfehlt!"
-        for x in range(len(miss)+1):
+        for x in range(len(miss) + 1):
             delay = delayAfter + 40 * x
             missText = miss[:x]
             updateText = lambda t=missText: canvasTextfeld.itemconfigure(textMove, text=t)
@@ -617,11 +626,12 @@ def dmgProcessing(player, project, text, miss):
     # Die Funktion buttonNextRound wird nach dem delay geladen.
     canvasGrafiken.after(delay, lambda: buttonNextRound())
 
+
 def buttonNextRound():
     global turn
     # Erstellen eines Buttons mit der Aufschrift "PRESS ENTER"
-    button = Button(tkinterFenster, text="PRESS ENTER" , bd=0, bg="#fff", fg="#555", anchor=S,
-                     font=("Press Start 2P", 23))
+    button = Button(tkinterFenster, text="PRESS ENTER", bd=0, bg="#fff", fg="#555", anchor=S,
+                    font=("Press Start 2P", 23))
     # Laden des Buttons in Canvas Window
     canvasTextfeld.create_window(400, 270, window=button)
     # Basierend darauf wer angefangen hat bzw. zuletzt dran war, wird die nächste Aktion an die Enter-Taste gebunden.
@@ -631,13 +641,13 @@ def buttonNextRound():
         tkinterFenster.bind("<KeyPress-Return>", lambda b: menu())
         turn = 0
     else:
-        #Wurde zuletzt eine Spieleraktion durchgeführt, wird eine Projekt Aktion ausgeführt
+        # Wurde zuletzt eine Spieleraktion durchgeführt, wird eine Projekt Aktion ausgeführt
         tkinterFenster.bind("<KeyPress-Return>", lambda b: projectAction())
         turn = 1
 
+
 # Animation die das Bild der Gruppe blinken lässt
 def dmgAnimationPlayer(durchlaeufe):
-
     # Mit der Canvas-Methode tag_raise können alle Objekte mit dem gleichen Tag um eine Ebene nach oben, also in den Vordergrund
     # gehoben werden. Danch wird das Objekt mit der Methode tag_lower wieder in den Hintergrund geschoben. Dies geschieht in
     # zeitversetzten Abständen mit der .after Methode, wodurch ein blinkender Effekt ensteht.
@@ -653,8 +663,8 @@ def dmgAnimationPlayer(durchlaeufe):
         # Solange durchlaeufe < 4 wird die Funktion erneut aufgerufen.
         dmgAnimationPlayer(durchlaeufe)
 
-def dmgAnimationProject(durchlaeufe):
 
+def dmgAnimationProject(durchlaeufe):
     # Mit der Canvas-Methode tag_raise können alle Objekte mit dem gleichen Tag um eine Ebene nach oben, also in den Vordergrund
     # gehoben werden. Danch wird das Objekt mit der Methode tag_lower wieder in den Hintergrund geschoben. Dies geschieht in
     # zeitversetzten Abständen mit der .after Methode, wodurch ein blinkender Effekt ensteht.
@@ -687,7 +697,6 @@ def healthBarReductionPlayer(durchlaeufe, healthReduction, dmgPlayer):
         if currentKP > 100:
             currentKP = 100
 
-
     # Über die Canvas-Methode coords, können die Koordinaten der Rechtecke für die Leben der Spieler neu angepasst werden. Anders als bei der Methode .move
     # werden die Koordinaten komplett neu definiert, weshalb die genauen Leben, also currentKP benötigt werden, anstatt einfach nur -durchlaeufe bazuziehen.
     # Der Wert für CurrentKP wird hier * 2 gerechnet, da 2 Pixel pro Leben in der DArstellung genutzt werden.
@@ -704,11 +713,10 @@ def healthBarReductionPlayer(durchlaeufe, healthReduction, dmgPlayer):
     # Basierend auf der Größe von currentKP wird der varaible healthColor eine Farbe zugewiesen.
     healthColor = "green" if currentKP >= 80 else "lightgreen" if currentKP >= 60 else "yellow" if currentKP >= 40 else "orange" if currentKP >= 20 else "red"
 
-    #Mit der Methode .itemconfigure wird dann die Farbe der healthBar angepasst.
+    # Mit der Methode .itemconfigure wird dann die Farbe der healthBar angepasst.
     changeColor = lambda: canvasGrafiken.itemconfigure(healthbarPlayerColor, fill=healthColor)
     # Die Anpassung wird ebenfalls in einem delay von 40ms * durchlaufe dargestellt.
     canvasGrafiken.after(durchlaeufe * 40, changeColor)
-
 
     if durchlaeufe < healthReduction and currentKP > 0:
         # Wenn die Azahl der Durchläufe kleiner als die abzuziehenden Leben ist und die Leben (currentKP) nicht schon auf 0 gesunken sind, dann wird durchlaeufe um 1 erhöht
@@ -786,7 +794,6 @@ def healthBarReductionProject(durchlaeufe, healthReduction, dmgProject):
 
 
 def spielEnde(ende):
-
     # Belegung aller Tasten werden gelöst und das Textfeld wird gelöscht
     tkinterFenster.unbind("<KeyPress-Down>")
     tkinterFenster.unbind("<KeyPress-Up>")
@@ -797,7 +804,7 @@ def spielEnde(ende):
 
     # Überprüfung ob der Parameter ende "gewonnen" oder "verloren" ist
     if ende == "gewonnen":
-        # Die Animation für 
+        # Die Animation für
         canvasGrafiken.after(500, lambda: animationGewonnen(1, 300))
         canvasGrafiken.after(1200, lambda: textfightEnde(ende))
     else:
@@ -806,9 +813,8 @@ def spielEnde(ende):
 
 
 def animationGewonnen(durchlaeufe, coordinates):
-
     canvasGrafiken.delete("project")
-    moveprojectFigur = lambda: canvasGrafiken.move(projectFigurAnzeige, 0,-5)
+    moveprojectFigur = lambda: canvasGrafiken.move(projectFigurAnzeige, 0, -5)
     canvasGrafiken.after(durchlaeufe * 10, moveprojectFigur)
 
     if coordinates > 0:
@@ -817,7 +823,6 @@ def animationGewonnen(durchlaeufe, coordinates):
 
 
 def animationVerloren(durchlaeufe, coordinates):
-
     canvasGrafiken.delete("player")
     moveplayerFigur = lambda: canvasGrafiken.move(playerFigurAnzeige, 0, +5)
     canvasGrafiken.after(durchlaeufe * 10, moveplayerFigur)
@@ -828,7 +833,6 @@ def animationVerloren(durchlaeufe, coordinates):
 
 
 def textfightEnde(ende):
-
     canvasTextfeld.delete("menu")
     tkinterFenster.bind("<KeyPress-Return>", lambda b: outro())
 
@@ -838,15 +842,14 @@ def textfightEnde(ende):
     else:
         fightEndText = "Die Gruppe wurde besiegt!"
 
-
-    for x in range(len(fightEndText)+1):
+    for x in range(len(fightEndText) + 1):
         delay = 40 * x
         text = fightEndText[:x]
         textUpdate = lambda text=text: canvasTextfeld.itemconfigure(fightEnd, text=text)
         canvasGrafiken.after(delay, textUpdate)
 
     button = Button(tkinterFenster, text="PRESS ENTER", bd=0, bg="#fff", fg="#555", anchor=S,
-                     font=("Press Start 2P", 20))
+                    font=("Press Start 2P", 20))
     canvasTextfeld.create_window(400, 275, window=button)
 
 
@@ -859,7 +862,7 @@ def outro():
 
     outroText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17))
 
-    if  currentLifePlayer > 0.8:
+    if currentLifePlayer > 0.8:
         picture = PhotoImage(file="Assets/Images/001_Sternenhimmel.png")
         outro = "War es ein Wunder? War es pures Können? Das alles spielte keine Rolle. Den Helden war es gelungen, was bis jetzt noch niemandem gelungen war. Sie hatten eine 1 für ihr Projekt bekommen. Der erste Schritt in eine steile Karriere."
     elif currentLifePlayer > 0.6:
@@ -876,11 +879,11 @@ def outro():
         outro = "Uff, eine 5. Das tut weh! Sich zu schämen ist hier wohl angebracht. Der einzige Wehrmutstropfen ist: Es geht noch schlimmer."
     else:
         picture = PhotoImage(file="Assets/Images/Gruppe.png")
-        outro ="Eine 6? Da könnte man ja glatt meinen die Helden hätten es gar nicht versucht. Wobei Helden in diesem Fall wohl nicht mehr angebracht ist. Nennen wir sie einfach Personen. Ja die Personen haben ins Klo gegriffen!"
+        outro = "Eine 6? Da könnte man ja glatt meinen die Helden hätten es gar nicht versucht. Wobei Helden in diesem Fall wohl nicht mehr angebracht ist. Nennen wir sie einfach Personen. Ja die Personen haben ins Klo gegriffen!"
 
-    canvasGrafiken.create_image(400, 250, anchor= CENTER, image=picture)
+    canvasGrafiken.create_image(400, 250, anchor=CENTER, image=picture)
 
-    for x in range(len(outro)+1):
+    for x in range(len(outro) + 1):
         delay = 30 * x
         text = outro[:x]
         textUpdate = lambda text=text: canvasTextfeld.itemconfigure(outroText, text=text)
@@ -889,21 +892,22 @@ def outro():
     currentLifeProject = 1
     currentLifePlayer = 1
     button = Button(tkinterFenster, text="TRY AGAIN", bd=0, bg="#fff", fg="#555", anchor=S,
-                     font=("Press Start 2P", 23))
+                    font=("Press Start 2P", 23))
     canvasTextfeld.create_window(400, 270, window=button)
+
 
 # Erstellen des Tkinter Fensters. Mit dem definieren der Variable tkinterFenster, als Funktion Tk(), wird ds Fenster initialisiert.
 tkinterFenster = Tk()
 # Über verschiedene Methoden können Tkinter Objekte angepasst werden.
-# .title setzt einen Fenster-Namen fest. 
+# .title setzt einen Fenster-Namen fest.
 tkinterFenster.title("Das Projekt")
 # .geometry setzt die Größe in x*y Pixeln fest
 tkinterFenster.geometry("800x800")
 # .configure bearbeitet Eigenschaften eines Tkinter Objekts. Mit bg, wird der Background auf einen Hexcode gesetzt
 tkinterFenster.configure(bg="#555")
 
-#Definieren einiger globaler variablen die später benötigt werden
-# menuSelection wird für die Auswahl im Kampfmenü verwendet  
+# Definieren einiger globaler variablen die später benötigt werden
+# menuSelection wird für die Auswahl im Kampfmenü verwendet
 menuSelectionUpDown = 0
 menuSelectionLeftRight = 0
 # currentLife sind die Prozentualen Leben der
@@ -912,10 +916,9 @@ currentLifePlayer = 1
 
 healing = FALSE
 
-
-#Aufrufe der ersten Funktion setupWindow()
+# Aufrufe der ersten Funktion setupWindow()
 setupWindow()
 
-# .mainloop beendet den Loop in den Tkinter Funktionen und Methoden lesen und ausführen kann. 
-# Die Methode muss global definiert sein und darf nicht durch schleifen die den Main-Thread unterbrechen gestoppt werden.  
+# .mainloop beendet den Loop in den Tkinter Funktionen und Methoden lesen und ausführen kann.
+# Die Methode muss global definiert sein und darf nicht durch schleifen die den Main-Thread unterbrechen gestoppt werden.
 tkinterFenster.mainloop()
