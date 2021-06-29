@@ -19,7 +19,7 @@ def setupWindow():
 
     # Der Funktion introStory wird mit 1 als Übergabeparameter aufgerufen. 
     # Der Parameter wird als Counter verwendet und zählt die Anzahl der Durchläufe der Funktion
-    introStory(1)
+    introStory(0)
 
 def introStory(round):
     # Die Variable picture wird global gesetzt, da Bildelemente mit PhotoImage nur lokal geladen werden und der
@@ -35,22 +35,42 @@ def introStory(round):
 
     # Basierend auf dem Parameter round wird ein Foto mit der Funktion PhotoImage geladen und ein Text wird der Variable
     # intro zugewiesen
+    if round == 0:
+        picture = PhotoImage(file="Assets/Images/000 Titelbild.png")
+        intro = ""
+
     if round == 1:
-        picture = PhotoImage(file="Assets/Images/001_Sternenhimmel.png")
-        intro = "Vor sehr langer Zeit… sehr sehr langer Zeit… mindestens drei Wochen her… beginnt unsere Geschichte. "
+        picture = PhotoImage(file="Assets/Images/001 Sternenhimmel.png")
+        intro = "Vor sehr langer Zeit… sehr sehr langer Zeit… mindestens drei Wochen her… beginnt unsere Geschichte."
+
     if round == 2:
-        picture = PhotoImage(file="Assets/Images/002_Schule.png")
-        intro = "Es war ein normaler Tag, an einer normalen Schule, in einem alles andere als normalen Jahr. Doch die Schmorona-Pandemie änderte alles."
+        picture = PhotoImage(file="Assets/Images/002 Schule.png")
+        intro = 'Es war ein normaler Tag an einer normalen Schule an einem alles als normalen Jahr. Die Schmorona-Pandemie änderte alles.'
+
     if round == 3:
-        picture = PhotoImage(file="Assets/Images/003_Schule_Apokalypse.png")
-        intro = 'Ok... vielleicht nicht so drastisch. Aber Klausuren fanden nicht statt und Lehrer forderten "Ersatzleistungen". Und darüber handelt auch unsere Geschichte. Doch warum seht ihr nicht einfach selbst!'
-    # if round == 4:
-    #     picture = PhotoImage(file="Assets/Images/coronavirus.png")
-    #     intro = "Schaut wie naiv und unschuldig noch alle sind! Das wird sich sogleich ändern."
+        picture = PhotoImage(file="Assets/Images/003 Schule Apokalypse.png")
+        intro = "Ok vielleicht nicht so drastisch, aber ihr versteht den Punkt. Vieles änderte sich. Klausuren fanden nicht statt und Lehrer forderten „Ersatzleistungen“. Und darüber handelt auch unsere Geschichte. Doch warum seht ihr nicht einfach selbst!"
+
     if round == 4:
-        picture = PhotoImage(file="Assets/Images/Gruppe.png")
-        intro = "So liebe Klasse! Da wir aufgrund der Schmorona-Pandemie keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht's!"
+        picture = PhotoImage(file="Assets/Images/005 Klassenzimmer Voll.png")
+        intro = "Schaut wie naiv und unschuldig noch alle sind! Das wird sich sogleich ändern."
+
+    if round == 5:
+        picture = PhotoImage(file="Assets/Images/007 Lehrer.png")
+        intro = "„So Klasse! Ich habe mir etwas überlegt. Da wir aufgrund der Schmorona-Pandemie leider keine Klausuren und auch keinen Unterricht halten konnten, werdet ihr ein Gruppenprojekt machen müssen. Dieses Projekt ist gleich eure Endnote, also verhaut es nicht. Findet eine Gruppe und los geht’s!“"
     
+    if round == 6:
+        picture = PhotoImage(file="Assets/Images/005 Klassenzimmer Voll.png")
+        intro = ""
+
+    if round == 7:
+        picture = PhotoImage(file="Assets/Images/006 Rauchwolke.png")
+        intro = ""
+
+    if round == 8:
+        picture = PhotoImage(file="Assets/Images/004 Klassenzimmer Vier.png")
+        intro = "Und so bahnte das Schicksal unseren Helden einen Weg. Doch den Kampf werden Sie selber führen müssen. Können Sie bestehen und ihre Note retten?"
+
     # Das geladene Bild wird mit der Methode create_image dargestellt und zentriert ausgerichtet. Zenter basiert auf den x,y-Koordinaten.
     canvasGrafiken.create_image(400, 250, anchor=CENTER, image=picture)
 
@@ -58,7 +78,7 @@ def introStory(round):
     # länge des Strings ausgeführt
     for x in range(len(intro)+1):
         # Eine zeitliche Verzögerung mit 40mal dem Wert von x wird berechnet
-        delay = 20 * x
+        delay = 30 * x
         # Mit ":x" innerhalb eines Listenindexes werden die Werte bis zum Index "x" einbezogen und der Variable text zugewiesen
         text = intro[:x]
         # Der Variable wird die anonyme Funktion lambda zugewiesen. lambda wird der Übergabeparameter "t" mitgegeben, 
@@ -83,7 +103,7 @@ def buttonNextIntro(round):
     tkinterFenster.bind("<KeyPress-Return>", lambda b: introStory(round))
     
     # Wenn round = 5 ist, wird der Tastendruck für Enter neu definiert und führt die Funktion setup aus
-    if round == 5:
+    if round == 9:
         tkinterFenster.bind("<KeyPress-Return>", lambda b: setup())
 
 
@@ -101,13 +121,13 @@ def setup():
     whiteBackground = PhotoImage(file="Assets/Images/White.png")
     # Weiße Hintergründe werden für die Beiden Entitäten erstellt. Diese werden später für die dmgAnimation benötigt.
     # Ein tag muss hier festgelegt werden, um später mit einer speziellen Methode auf die Objekte zugreifen zu können.
-    whiteBackgroundPlayer = canvasGrafiken.create_image(20, 330, anchor=W,image=whiteBackground, tag="whitePl")
+    whiteBackgroundPlayer = canvasGrafiken.create_image(20, 350, anchor=W,image=whiteBackground, tag="whitePl")
     whiteBackgroundProject = canvasGrafiken.create_image(780, 150, anchor=E,image=whiteBackground, tag="whitePr")
 
-    playerFigur = PhotoImage(file="Assets/Images/Gruppe.png")
+    playerFigur = PhotoImage(file="Assets/Images/013 Gruppe.png")
     playerFigurAnzeige = canvasGrafiken.create_image(800, 330, anchor=W, image=playerFigur)
 
-    projectFigur = PhotoImage(file="Assets/Images/coronavirus.png")
+    projectFigur = PhotoImage(file="Assets/Images/012 Projekt Kampf Hintergrund.png")
     projectFigurAnzeige = canvasGrafiken.create_image(0, 150, anchor=E, image=projectFigur)
 
     # Aufrufen der Funktion figurenMove mit Übergabeparameter "800", welcher die Koordinaten der x-Achse repräsentiert und
@@ -733,6 +753,7 @@ def healthBarReductionProject(durchlaeufe, healthReduction, dmgProject):
 
 def spielEnde(ende):
 
+    # Belegung aller Tasten werden gelöst und das Textfeld wird gelöscht
     tkinterFenster.unbind("<KeyPress-Down>")
     tkinterFenster.unbind("<KeyPress-Up>")
     tkinterFenster.unbind("<KeyPress-Right>")
@@ -740,7 +761,9 @@ def spielEnde(ende):
     tkinterFenster.unbind("<KeyPress-Return>")
     canvasTextfeld.delete("all")
 
+    # Überprüfung ob der Parameter ende "gewonnen" oder "verloren" ist
     if ende == "gewonnen":
+        # Die Animation für 
         canvasGrafiken.after(500, lambda: animationGewonnen(1, 300))
         canvasGrafiken.after(1200, lambda: textfightEnde(ende))
     else:
