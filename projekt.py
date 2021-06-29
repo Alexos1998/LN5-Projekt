@@ -17,7 +17,7 @@ def setupWindow():
     canvasTextfeld.configure(bg="#fff")
     canvasTextfeld.pack()
 
-    # Der Funktion introStory wird mit 1 als Übergabeparameter aufgerufen.
+    # Der Funktion introStory wird mit 0 als Übergabeparameter aufgerufen.
     # Der Parameter wird als Counter verwendet und zählt die Anzahl der Durchläufe der Funktion
     introStory(0)
 
@@ -515,6 +515,7 @@ def playerAction(move):
     # Aufrufen der Funktion dmgProcessing, in der Texte und Animationen für die Schadenbeerchnung angezeigt bzw. aufgerufen werden.
     # An die Funktion werden der Schaden am Spieler, am Projekt, der Aktionstext und boolean miss übergeben
     dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
+
 
 
 def projectAction():
