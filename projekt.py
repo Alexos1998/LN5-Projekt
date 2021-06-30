@@ -1,7 +1,7 @@
 from tkinter import *
 import random
 
-
+# Aufteilung des tkinter Fensters in 2 Canvas Fenster
 def setupWindow():
     # Variablen werden global definiert, damit sie auch außerhalb der lokalen Funktion geladen werden können
     global canvasGrafiken, canvasTextfeld
@@ -24,6 +24,7 @@ def setupWindow():
     introStory(0)
 
 
+# Bilder und Texte für die Story werden geladen/erstellt und angezeigt
 def introStory(round):
     # Die Variable picture wird global gesetzt, da Bildelemente mit PhotoImage nur lokal geladen werden und der
     # Tkinter.mainloop die Dateien sonst nicht erkennt
@@ -109,7 +110,7 @@ def introStory(round):
         tkinterFenster.bind("<KeyPress-Return>", lambda b: setup())
 
 
-
+# Laden der Bilder für gruppe und Spieler
 def setup():
     global playerFigurAnzeige, playerFigur, projectFigurAnzeige, projectFigur, whiteBackground
 
@@ -137,7 +138,7 @@ def setup():
     # "0" welcher als Counter benutzt wird
     figurenMove(800, 0)
 
-
+# Funktion in der die Bilder der Gruppe/Projekt animiert bewegt werden
 def figurenMove(coordinates, durchlaeufe):
     global playerFigurAnzeige, projectFigurAnzeige
 
@@ -163,7 +164,7 @@ def figurenMove(coordinates, durchlaeufe):
         durchlaeufe += 1
         figurenMove(coordinates, durchlaeufe)
 
-
+# Grafiken für Darstellung der Lebensanzeigen für Gruppe und Projekt werden geladen
 def tkinterFensterGraphic():
     global currentKPIndex, playerArrow, projectArrow, healthbarPlayerColor, healthbarProjectColor
 
@@ -208,9 +209,9 @@ def introFight():
         canvasTextfeld.after(delay, textUpdate)
 
     # Aufrufen der Funktion zur Darstellung eines Knopfes wird nach dem delay aus der Textdarstellung ausgeführt
-    tkinterFenster.after(delay + 200, lambda: buttonErsteRunde())
+    tkinterFenster.after(delay, lambda: buttonErsteRunde())
 
-
+# Funktion in der ein Knopf zum Beginn des Kampfes erstellt wird
 def buttonErsteRunde():
     global button
 
@@ -282,7 +283,7 @@ def ersteRunde():
     button = canvasTextfeld.create_text(400, 288, text="PRESS ENTER", anchor=S, fill="#555",
                                         font=("Press Start 2P", 23))
 
-
+# Erstellen mehrerer Knöpfe fürs Kampfmenü
 def menu():
     global menuButton1, menuButton2, menuButton3, tkinterFenster, selectionMarker, selection, menuListMoves, menuListSpecial
 
@@ -322,7 +323,7 @@ def menu():
     # Aufrufen der Funktion menuNavigation
     menuNavigation()
 
-
+# Tastenbelegung im Menü
 def menuNavigation():
     # Binden von System-Inputs auf die Pfeiltasten und ENTER-Taste.
     # Die .bind Methode üvergibt automatisch den Parameter "b" an die anonyme Funktion lambda.
@@ -332,7 +333,7 @@ def menuNavigation():
     tkinterFenster.bind("<KeyPress-Right>", lambda b: menuSelection(b))
     tkinterFenster.bind("<KeyPress-Left>", lambda b: menuSelection(b))
 
-
+# Auswahl der Fähigkeiten im Kampfmenü des Spielers
 def menuSelection(keystroke):
     # Laden der globalen Variablen, die am Anfang des Programms alle auf 0 definiert wurden
     global menuSelectionUpDown, menuSelectionLeftRight, selection
@@ -428,7 +429,7 @@ def menuSelection(keystroke):
         tkinterFenster.unbind("<KeyPress-Return>")
 
 
-# Funktion in der die verschiedenen Fähigkeiten der Gruppe definiert werden
+# Funktion in der die verschiedenen Fähigkeiten der Gruppe definiert/ausgeführt werden
 def playerAction(move):
     # Der boolean healing wird später in der Dmg Berechnung benötigt
     global healing
@@ -513,6 +514,7 @@ def playerAction(move):
     dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
 
 
+# Funktion in der die verschiedenen Fähigkeiten des Projects definiert/asugeführt werden
 def projectAction():
     global healing, currentLifeProject
 
@@ -557,7 +559,7 @@ def projectAction():
 
     dmgProcessing(dmgPlayer, dmgProject, actionText, miss)
 
-
+# Funktion in der die berechneten Schadenswerte der Fähigkeiten überprüft und dementsprechen weitere Funktionen ausgeführt werden
 def dmgProcessing(player, project, text, miss):
     global menuSelectionLeftRight, menuSelectionUpDown, menhealthbarProjectColor, healthbarPlayerColor, currentLifeProject, currentLifePlayer
     # Zu Beginn der Verarbeitung der ausgeführten Aktion werden zunächst alle Keybindings gelöst und alle Elemente werden von vom Textfeld gelöscht.
@@ -627,7 +629,7 @@ def dmgProcessing(player, project, text, miss):
         canvasGrafiken.after(delay + 300 + healthReductionProject * 40, lambda: buttonNextRound())
 
 
-
+# Ein Knopf der die nächste Aktion in der Kampfreihenfolge ausführt
 def buttonNextRound():
     global turn
     # Erstellen eines Buttons mit der Aufschrift "PRESS ENTER"
@@ -650,42 +652,42 @@ def buttonNextRound():
 # Animation die das Bild der Gruppe blinken lässt
 def dmgAnimationPlayer(durchlaeufe):
     # Mit der Canvas-Methode tag_raise können alle Objekte mit dem gleichen Tag um eine Ebene nach oben, also in den Vordergrund
-    # gehoben werden. Danch wird das Objekt mit der Methode tag_lower wieder in den Hintergrund geschoben. Dies geschieht in
-    # zeitversetzten Abständen mit der .after Methode, wodurch ein blinkender Effekt ensteht.
-    # Das verschobenen Objekt ist hier einfach nur ein weißes Quadrat, welches in der Funktion tkinterFensterGraphic() erstellt wurde
+    # gehoben werden. Danach wird das Objekt mit der Methode tag_lower wieder in den Hintergrund geschoben. Dies geschieht in
+    # zeitversetzten Abständen mit der .after Methode.
+    # Das verschobenen Objekt ist ein weißes Quadrat, welches in der Funktion tkinterFensterGraphic() erstellt wurde.
     raiseWhite = lambda: canvasGrafiken.tag_raise("whitePl")
     canvasGrafiken.after(durchlaeufe * 70, raiseWhite)
     lowerWhite = lambda: canvasGrafiken.tag_lower("whitePl")
     canvasGrafiken.after(durchlaeufe * 100, lowerWhite)
 
     # Die Abfrage überprüft den Parameter durchlaeufe, und erhöht in um 1, falls er kleiner als 4 sein wollte.
+    # Solange durchlaeufe < 4 wird die Funktion erneut aufgerufen.
     if durchlaeufe < 4:
         durchlaeufe += 1
-        # Solange durchlaeufe < 4 wird die Funktion erneut aufgerufen.
         dmgAnimationPlayer(durchlaeufe)
 
-
+# Animation die das Bild des Projects blinken lässt
 def dmgAnimationProject(durchlaeufe):
     # Mit der Canvas-Methode tag_raise können alle Objekte mit dem gleichen Tag um eine Ebene nach oben, also in den Vordergrund
-    # gehoben werden. Danch wird das Objekt mit der Methode tag_lower wieder in den Hintergrund geschoben. Dies geschieht in
-    # zeitversetzten Abständen mit der .after Methode, wodurch ein blinkender Effekt ensteht.
-    # Das verschobenen Objekt ist hier einfach nur ein weißes Quadrat, welches in der Funktion tkinterFensterGraphic() erstellt wurde
+    # gehoben werden. Danach wird das Objekt mit der Methode tag_lower wieder in den Hintergrund geschoben. Dies geschieht in
+    # zeitversetzten Abständen mit der .after Methode.
+    # Das verschobenen Objekt ist ein weißes Quadrat, welches in der Funktion tkinterFensterGraphic() erstellt wurde
     raiseWhite = lambda: canvasGrafiken.tag_raise("whitePr")
     canvasGrafiken.after(durchlaeufe * 70, raiseWhite)
     lowerWhite = lambda: canvasGrafiken.tag_lower("whitePr")
     canvasGrafiken.after(durchlaeufe * 100, lowerWhite)
 
     # Die Abfrage überprüft den Parameter durchlaeufe, und erhöht in um 1, falls er kleiner als 4 sein wollte.
+    # Solange durchlaeufe < 4 wird die Funktion erneut aufgerufen.
     if durchlaeufe < 4:
         durchlaeufe += 1
-        # Solange durchlaeufe < 4 wird die Funktion erneut aufgerufen.
         dmgAnimationProject(durchlaeufe)
 
 
 def healthBarReductionPlayer(durchlaeufe, healthReduction, dmgPlayer):
     global currentLifePlayer, healing
 
-    # Zunächst wird über die globale Variable "healing" überprüft, ob sie TRUE oder FALSE ist, bzw. ob die Fähigkeit Schaden hinzufügen oder heilen soll
+    # Zunächst wird der globale boolean "healing" überprüft, ob sie TRUE oder FALSE ist, bzw. ob die Fähigkeit Schaden hinzufügen oder heilen soll
     if healing == FALSE:
         # Wenn es keine Heilung ist, werden die aktuellen Leben (ein "0."-Wert) in ein ganzzahligen Wert umgerechnet und die Anzahl der Durchläufe
         # werden von den Leben subtrahiert. Das Ergebniss wird der Variable currentKP zugewiesen.
@@ -878,10 +880,10 @@ def textFightEnde(ende):
 def outro():
     global picture, button, currentLifeProject, currentLifePlayer
 
-    # Löscht alle Objekte von beiden Canvas Fenstern und belegt die Enter-Taste mit der Funktion setup().
+    # Löscht alle Objekte von beiden Canvas Fenstern
     canvasGrafiken.delete("all")
     canvasTextfeld.delete("all")
-    tkinterFenster.bind("<KeyPress-Return>", lambda b: setup())
+
 
     # # Erstellen eines leeren Textobjekts
     outroText = canvasTextfeld.create_text(400, 10, width=780, anchor=N, text="", font=("Press Start 2P", 17))
@@ -911,7 +913,7 @@ def outro():
     # Laden des Bildes aus der Variable picture
     canvasGrafiken.create_image(400, 0, anchor=N, image=picture)
 
-    # SChleife zur Textausgabe von outro
+    # Schleife zur Textausgabe von outro
     for x in range(len(outro) + 1):
         delay = 30 * x
         text = outro[:x]
@@ -922,10 +924,12 @@ def outro():
     currentLifeProject = 1
     currentLifePlayer = 1
 
-    # Erstellen eines Buttons mit der Aufschrift TRY AGAIN
+    # Erstellen eines Buttons mit dem Text "TRY AGAIN"
     button = Button(tkinterFenster, text="TRY AGAIN", bd=0, bg="#fff", fg="#555", anchor=S,
                     font=("Press Start 2P", 23))
     canvasTextfeld.create_window(400, 270, window=button)
+    # Belegt die Enter-Taste mit der Funktion setup().
+    tkinterFenster.bind("<KeyPress-Return>", lambda b: setup())
 
 
 # Erstellen des Tkinter Fensters. Mit dem definieren der Variable tkinterFenster, als Funktion Tk() wird das Fenster initialisiert.
