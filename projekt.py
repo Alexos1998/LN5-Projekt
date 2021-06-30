@@ -65,11 +65,11 @@ def introStory(round):
 
     if round == 6:
         picture = PhotoImage(file="Assets/Images/005 Klassenzimmer Voll.png")
-        intro = ""
+        intro = "Es herrschte Stille. Doch es war nur die Ruhe vor dem Sturm."
 
     if round == 7:
         picture = PhotoImage(file="Assets/Images/006 Rauchwolke.png")
-        intro = "*Raschel* *Raschel*"
+        intro = "Es brach ein Durcheinander aus. Jeder suchte sich Partner für seine Gruppe bis nur noch vier übrig blieben."
 
     if round == 8:
         picture = PhotoImage(file="Assets/Images/004 Klassenzimmer Vier.png")
@@ -82,7 +82,7 @@ def introStory(round):
     # länge des Strings "intro" ausgeführt
     for x in range(len(intro) + 1):
         # Eine zeitliche Verzögerung mit n * ms * dem Wert von x wird berechnet
-        delay = 30 * x
+        delay = 25 * x
         # Mit ":x" innerhalb eines Listenindexes werden die Werte bis zum Index "x" einbezogen und der Variable text zugewiesen
         text = intro[:x]
         # Der Variable wird die anonyme Funktion lambda zugewiesen. lambda wird der Übergabeparameter "t" mitgegeben,
@@ -629,7 +629,7 @@ def dmgProcessing(player, project, text, miss):
         canvasGrafiken.after(delay + 300 + healthReductionProject * 40, lambda: buttonNextRound())
 
 
-# Ein Knopf der die nächste Aktion in der Kampfreihenfolge ausführt
+# Ein Knopf der der zur nächsten Aktion in der Kampfreihenfolge führt
 def buttonNextRound():
     global turn
     # Erstellen eines Buttons mit der Aufschrift "PRESS ENTER"
@@ -644,7 +644,7 @@ def buttonNextRound():
         tkinterFenster.bind("<KeyPress-Return>", lambda b: menu())
         turn = 0
     else:
-        # Wurde zuletzt eine Spieleraktion durchgeführt, wird eine Projekt Aktion ausgeführt
+        # Wurde zuletzt eine Spieleraktion durchgeführt, wird eine Projektaktion ausgeführt
         tkinterFenster.bind("<KeyPress-Return>", lambda b: projectAction())
         turn = 1
 
@@ -656,7 +656,7 @@ def dmgAnimationPlayer(durchlaeufe):
     # zeitversetzten Abständen mit der .after Methode.
     # Das verschobenen Objekt ist ein weißes Quadrat, welches in der Funktion tkinterFensterGraphic() erstellt wurde.
     raiseWhite = lambda: canvasGrafiken.tag_raise("whitePl")
-    canvasGrafiken.after(durchlaeufe * 70, raiseWhite)
+    canvasGrafiken.after(durchlaeufe * 60, raiseWhite)
     lowerWhite = lambda: canvasGrafiken.tag_lower("whitePl")
     canvasGrafiken.after(durchlaeufe * 100, lowerWhite)
 
@@ -673,7 +673,7 @@ def dmgAnimationProject(durchlaeufe):
     # zeitversetzten Abständen mit der .after Methode.
     # Das verschobenen Objekt ist ein weißes Quadrat, welches in der Funktion tkinterFensterGraphic() erstellt wurde
     raiseWhite = lambda: canvasGrafiken.tag_raise("whitePr")
-    canvasGrafiken.after(durchlaeufe * 70, raiseWhite)
+    canvasGrafiken.after(durchlaeufe * 60, raiseWhite)
     lowerWhite = lambda: canvasGrafiken.tag_lower("whitePr")
     canvasGrafiken.after(durchlaeufe * 100, lowerWhite)
 
