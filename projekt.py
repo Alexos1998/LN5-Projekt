@@ -100,10 +100,10 @@ def introStory(round):
                     font=("Press Start 2P", 16))
     # Canvas-Methode .create_window erstellt ein Fenster bei x,y-Koordinaten und lädt den Knopf "button" als Fenster
     canvasTextfeld.create_window(400, 275, window=button)
-    # Tkinter-Methode .bind weißt dem Tastendruck Enter, die Funktion "introStory" zu.
-    # Der funktion wird dabei der Übergabeparamter round weitergegeben
 
     if round < 9:
+        # Tkinter-Methode .bind weißt dem Tastendruck Enter, die Funktion "introStory" zu.
+        # Der funktion wird dabei der Übergabeparamter round weitergegeben
         tkinterFenster.bind("<KeyPress-Return>", lambda b: introStory(round))
     # Wenn round nicht mehr kleiner 9 ist, wird der Tastendruck für Enter neu definiert und führt die Funktion setup aus
     else:
@@ -472,13 +472,14 @@ def playerAction(move):
     elif move == 5:
         actionText = "Die Gruppe hat eine Nachtschicht eingelegt!"
         dmgProject = round(0.25 + random.randint(-5, 15) / 100, 2)
+        missChance = random.randint(1,6)
         # Eine Zahl zwischen 0 und 1 wird der Variable zugewiesen. Diese bestimmt, ob der Spieler durch die Aktion ebenfalls selbst Schaden erleidet.
         selfDamageModifier = random.randint(0, 1)
-        # Sollte die Zahl 1 sein, fügt die Fähigkeit dem Spieler ebenfalls Schaden zu.
-        if selfDamageModifier == 1:
+        # Sollte der Modifier 1 sein und die Fähigkeit nicht missen (missChance == 1),  fügt die Fähigkeit dem Spieler ebenfalls Schaden zu.
+        if selfDamageModifier == 1 and missChance != 1:
             dmgPlayer = round(0.1 + random.randint(0, 10) / 100, 2)
-            # Definiert einen neuen Text für die Textausgabe
-            actionText = "Die Gruppe ist übermüdet und fügt sich selbst Schaden zu"
+            # Definiert einen neuen Text für die Textausgabe der Nachtschicht
+            actionText = "Die Gruppe hat nach der Nachtschicht Kopfschmerzen"
     else:
         actionText = "Die Gruppe hat Schummeln benutzt!"
         dmgProject = 0.5
@@ -586,18 +587,11 @@ def dmgProcessing(player, project, text, miss):
         updateText = lambda t=actionText: canvasTextfeld.itemconfigure(textMove, text=t)
         canvasTextfeld.after(delay, updateText)
 
-    # Das entgültige delay der ersten Textausgabe wird mit 500 addiert und in delayAfter zwischengespeichert.
-    delayAfter = delay + 500
+    # Der übergebene Schaden in Prozent also "0." Wert wird in eine ganze Zahl umgerechnet, aufgerundet und als Variable "healthReductionProject" gespeichert
+    healthReductionProject = int(round(project * 100))
 
-    # Sollte der Parameter miss = TRUE sein, wird ein zusätzlicher String in der Varaible "miss" an textMove übergeben.
-    if miss == TRUE:
-        miss = "Der Angriff hat verfehlt!"
-        for x in range(len(miss) + 1):
-            delay = delayAfter + 40 * x
-            missText = miss[:x]
-            updateText = lambda t=missText: canvasTextfeld.itemconfigure(textMove, text=t)
-            canvasTextfeld.after(delay, updateText)
-        canvasGrafiken.after(delay, lambda: buttonNextRound())
+    # Der übergebene Schaden in Prozent also "0." Wert wird in eine ganze Zahl umgerechnet, aufgerundet und als Variable "healthReductionPlayer" gespeichert
+    healthReductionPlayer = int(round(player * 100))
 
 
     # Sollten die übergebenen Schadenswerte in player größer als 0 sein, werden die Animationen für den Kampf
@@ -606,13 +600,11 @@ def dmgProcessing(player, project, text, miss):
         # Nach dem Delay in dem der Text erstellt wurde, wird zunächst die dmgAnimation aufgerufen mit dem Übergabeparameter (0), dieser
         # zählt die Durchläufe innerhalb der Funktion
         canvasGrafiken.after(delay, lambda: dmgAnimationPlayer(0))
-        # Der übergebene Schaden in Prozent also "0." Wert wird in eine ganze Zahl umgerechnet, aufgerundet und als Variable "healthReductionPlayer" gespeichert
-        healthReductionPlayer = int(round(player * 100))
         # Die Werte 1, welcher wieder als Index für die Schleifendurchläufe dient, die Variable healthReductionPlayer und der Parameter player, werden nun
         # als Übergabeparameter an die Funktion healtBarReductionPlayer übergeben
         canvasGrafiken.after(delay + 300, lambda: healthBarReductionPlayer(1, healthReductionPlayer, player))
-        # Die Funktion buttonNextRound wird nach dem delay geladen.
-        canvasGrafiken.after(delay + 300 + healthReductionPlayer * 40, lambda: buttonNextRound())
+
+
 
     # Sollten die übergebenen Schadenswerte project und project größer als 0 sein, werden die Animationen für das Projekt geladen.
     # Diese funktionieren genau wie beim Spieler auch
@@ -620,11 +612,25 @@ def dmgProcessing(player, project, text, miss):
         # Nach dem Delay in dem der Text erstellt wurde, wird zunächst die dmgAnimation aufgerufen mit dem Übergabeparameter (0), dieser
         # zählt die Durchläufe innerhalb der Funktion
         canvasGrafiken.after(delay, lambda: dmgAnimationProject(0))
-        # Der übergebene Schaden in Prozent also "0." Wert wird in eine ganze Zahl umgerechnet, aufgerundet und als Variable "healthReductionProject" gespeichert
-        healthReductionProject = int(round(project * 100))
         # Die Werte 1, welcher wieder als Index für die Schleifendurchläufe dient, die Variable healthReductionProject und der Parameter player, werden nun
         # als Übergabeparameter an die Funktion healtBarReductionProject übergeben
         canvasGrafiken.after(delay + 300, lambda: healthBarReductionProject(1, healthReductionProject, project))
+
+
+    # Das entgültige delay der ersten Textausgabe wird mit 500 addiert und in delayAfter zwischengespeichert.
+    delayAfter = delay + 500
+
+    # Sollte der Parameter miss == TRUE sein, wird ein zusätzlicher String in der Varaible "miss" an textMove übergeben.
+    if miss == TRUE:
+        miss = "Der Angriff hat verfehlt!"
+        for x in range(len(miss) + 1):
+            delay = delayAfter + 40 * x
+            missText = miss[:x]
+            updateText = lambda t=missText: canvasTextfeld.itemconfigure(textMove, text=t)
+            canvasTextfeld.after(delay, updateText)
+        # Die Funktion buttonNextRound wird nach dem delay geladen.
+        canvasGrafiken.after(delay, lambda: buttonNextRound())
+    else:
         # Die Funktion buttonNextRound wird nach dem delay geladen.
         canvasGrafiken.after(delay + 300 + healthReductionProject * 40, lambda: buttonNextRound())
 
@@ -864,7 +870,7 @@ def textFightEnde(ende):
     else:
         fightEndText = "Die Gruppe wurde besiegt!"
 
-    # Schleife zur Textausgabe
+    # Schleife zur Textausgabe von fightEndText
     for x in range(len(fightEndText) + 1):
         delay = 40 * x
         text = fightEndText[:x]
