@@ -243,7 +243,7 @@ def ersteRunde():
     projektStart = "Das Projekt fängt an!"
 
     # Eine Zahl zwischen eins und nur wird zufällig generiert und der Variable turn zugewiesen.
-    turn = random.randint(1, 1)
+    turn = random.randint(0, 1)
     # Wenn turn == 0 ist, fängt der Spieler an, bei turn == 1, das Projekt
     # Der Variable roundStart wird der String der beginnenden Entität zugewiesen und die Enter-Taste wird mit der entspechenden
     # Funktion belegt (Wenn der Spieler anfängt wird menu() ausgeführt, wenn das projekt anfängt wird projectAction() ausgeführt
