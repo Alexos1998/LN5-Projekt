@@ -632,7 +632,7 @@ def dmgProcessing(player, project, text, miss):
         canvasGrafiken.after(delay, lambda: buttonNextRound())
     else:
         # Die Funktion buttonNextRound wird nach dem delay geladen.
-        canvasGrafiken.after(delay + 300 + healthReductionProject * 40, lambda: buttonNextRound())
+        canvasGrafiken.after(delay + 500 + healthReductionProject * 40, lambda: buttonNextRound())
 
 
 # Ein Knopf der der zur nächsten Aktion in der Kampfreihenfolge führt
@@ -683,7 +683,7 @@ def dmgAnimationProject(durchlaeufe):
     lowerWhite = lambda: canvasGrafiken.tag_lower("whitePr")
     canvasGrafiken.after(durchlaeufe * 100, lowerWhite)
 
-    # Die Abfrage überprüft den Parameter durchlaeufe, und erhöht in um 1, falls er kleiner als 4 sein wollte.
+    # Die Abfrage überprüft den Parameter durchlaeufe, und erhöht ihn um 1, falls er kleiner als 4 sein wollte.
     # Solange durchlaeufe < 4 wird die Funktion erneut aufgerufen.
     if durchlaeufe < 4:
         durchlaeufe += 1
